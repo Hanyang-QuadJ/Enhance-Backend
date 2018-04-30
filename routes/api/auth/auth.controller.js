@@ -82,14 +82,13 @@ exports.login = (req, res) => {
 		}
 	)
 };
+
 exports.me = (req, res) => {
     conn.query('SELECT email, username from Users WHERE id=?', [req.decoded._id], (err, result) => {
     	if(err) throw err;
         return res.status(200).json({
             me: result
         });
-
     });
-
 };
 
