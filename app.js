@@ -147,7 +147,7 @@ refreshNews = async () => {
     }
 };
 
-refreshNews();
+// refreshNews();
 
 
 // });
