@@ -5,7 +5,7 @@ const config = require('../../../config');
 const conn = mysql.createConnection(config);
 
 exports.naverNewsSearch = (req, res) => {
-  const api_url = 'https://openapi.naver.com/v1/search/news?query=' + encodeURI(req.query.query) + '&display=' + encodeURI(req.query.display) + '&start=' + encodeURI(req.query.start); // json 결과
+  var api_url = 'https://openapi.naver.com/v1/search/news?query=' + encodeURI(req.query.query) + '&display=' + encodeURI(req.query.display) + '&start=' + encodeURI(req.query.start); // json 결과
 //   var api_url = 'https://openapi.naver.com/v1/search/blog.xml?query=' + encodeURI(req.query.query); // xml 결과
   var request = require('request');
   var options = {
