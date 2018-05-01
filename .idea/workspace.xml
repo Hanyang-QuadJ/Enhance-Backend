@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4d65631b-7895-4415-97d2-d32acfe6f17c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/routes/api/naver/naver.controller.js" afterPath="$PROJECT_DIR$/routes/api/naver/naver.controller.js" />
-    </list>
+    <list default="true" id="4d65631b-7895-4415-97d2-d32acfe6f17c" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -278,16 +276,15 @@
       <option name="presentableId" value="Default" />
       <updated>1525087118508</updated>
       <workItem from="1525087120130" duration="7480000" />
-      <workItem from="1525148312019" duration="2110000" />
+      <workItem from="1525148312019" duration="2305000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9590000" />
+    <option name="totallyTimeSpent" value="9785000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1440" y="0" width="1920" height="1200" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24960506" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
