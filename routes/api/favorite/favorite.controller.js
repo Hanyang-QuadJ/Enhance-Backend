@@ -4,10 +4,10 @@ const config = require('../../../config');
 const conn = mysql.createConnection(config);
 
 exports.addFavorite = (req, res) => {
-    const {user_id, coin_id} = req.body;
+    const { coin_id } = req.body;
 
     conn.query('SELECT * from Favorites WHERE user_id = ? AND coin_id = ?',
-        [user_id, coin_id], (err, result) => {
+        [req.decoded._id, coin_id], (err, result) => {
             if (result.length >= 1) {
                 return res.status(404).json({
                     message: 'You already have this coin as favorite'
@@ -19,7 +19,7 @@ exports.addFavorite = (req, res) => {
                 })
             }
             else {
-                conn.query('INSERT INTO Favorites(user_id, coin_id) VALUES (?,?)',[user_id,coin_id],(err, result) => {
+                conn.query('INSERT INTO Favorites(user_id, coin_id) VALUES (?,?)',[req.decoded._id, coin_id],(err, result) => {
                     if (err) throw err;
                     return res.status(200).json({
                         message: 'add favorite successfully',
@@ -30,17 +30,17 @@ exports.addFavorite = (req, res) => {
 };
 
 exports.removeFavorite = (req, res) => {
-    const {user_id, coin_id} = req.body;
+    const { coin_id } = req.body;
 
     conn.query('SELECT * from Favorites WHERE user_id = ? AND coin_id = ?',
-        [user_id, coin_id], (err, result) => {
+        [req.decoded._id, coin_id], (err, result) => {
             if (result.length === 0) {
                 return res.status(404).json({
                     message: 'That is not your favorite coin'
                 })
             }
             else {
-                conn.query('DELETE FROM Favorites WHERE user_id = ? AND coin_id = ?',[user_id,coin_id],(err, result) => {
+                conn.query('DELETE FROM Favorites WHERE user_id = ? AND coin_id = ?',[req.decoded._id,coin_id],(err, result) => {
                     if (err) throw err;
                     return res.status(200).json({
                         message: 'remove favorite successfully',
