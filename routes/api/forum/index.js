@@ -1,0 +1,11 @@
+const router = require('express').Router();
+const controller = require('./forum.controller');
+const authMiddleware = require('../../../middlewares/auth');
+router.use('/create', authMiddleware);
+router.use('/delete', authMiddleware);
+router.use('/update', authMiddleware);
+router.post('/create', controller.createForum);
+router.post('/delete', controller.deleteForum);
+router.post('/update', controller.updateForum);
+router.get('/all', controller.getAllForum);
+module.exports = router;
