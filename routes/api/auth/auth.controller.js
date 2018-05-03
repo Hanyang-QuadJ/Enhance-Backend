@@ -9,6 +9,7 @@ exports.register = (req, res) => {
     const {email, username, password} = req.body;
     const d = new Date();
     d.setUTCHours(d.getUTCHours());
+
     const encrypted = crypto.createHmac('sha1', config.secret)
         .update(password)
         .digest('base64');
@@ -33,10 +34,24 @@ exports.register = (req, res) => {
                             subject: 'userInfo'
                         }, (err, token) => {
                             if (err) return res.status(406).json({message: 'register failed'});
-                            return res.status(200).json({
-                                message: 'registered successfully',
-                                token
-                            });
+                            conn.query('SELECT * from Favorites WHERE user_id = ? AND coin_id = 1',
+                                [result.insertId], (err, result2) => {
+                                    if (result2.length >= 1) {
+                                        return res.status(404).json({
+                                            message: 'You already have this coin as favorite'
+                                        })
+                                    }
+                                    else {
+                                        conn.query('INSERT INTO Favorites(user_id, coin_id) VALUES (?,1)', [result.insertId], (err, result) => {
+                                            if (err) throw err;
+                                            return res.status(200).json({
+                                                message: 'registered successfully',
+                                                token
+                                            });
+                                        })
+                                    }
+                                });
+                            
                         });
                 });
         } else {
