@@ -27,7 +27,7 @@ exports.createForum = (req, res) => {
                 await coin_input(coin, result.insertId);
             });
             return res.status(200).json({
-                message: 'done'
+                forum_id: result.insertId
             })
         })
     // if (coin_id > 30 || coin_id < 1) {
@@ -40,7 +40,18 @@ exports.createForum = (req, res) => {
         
     // }
 };
-
+exports.getForumCoin = (req, res) => {
+    const { forum_id } = req.params;
+    conn.query(
+        'SELECT * FROM Forum_Coin JOIN Coins ON Forum_Coin.coin_id = Coins.id WHERE Forum_Coin.forum_id = ?',
+        [forum_id],
+        (err, result) => {
+            return res.status(200).json({
+                result
+            })
+        }
+    )
+}
 exports.deleteForum = (req, res) => {
     const {id} = req.body;
     conn.query('DELETE FROM Forums WHERE id = ?', [id], (err, result) => {
