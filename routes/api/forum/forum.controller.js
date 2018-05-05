@@ -36,12 +36,12 @@ exports.createForum = (req, res) => {
     //     })
     // }
     // else {
-        
-        
+
+
     // }
 };
 exports.getForumCoin = (req, res) => {
-    const { forum_id } = req.params;
+    const {forum_id} = req.params;
     conn.query(
         'SELECT * FROM Forum_Coin JOIN Coins ON Forum_Coin.coin_id = Coins.id WHERE Forum_Coin.forum_id = ?',
         [forum_id],
@@ -84,20 +84,55 @@ exports.updateForum = (req, res) => {
 };
 
 exports.getAllForum = (req, res) => {
-    conn.query('SELECT Forums.id, category, title, content, Users.id, Users.email, Users.username ' +
+    let getCoinById = (coin_id) => {
+        return new Promise((resolve, reject) => {
+            conn.query(
+                "SELECT * FROM Coins WHERE id = ?",
+                [coin_id],
+                (err, result) => {
+                    if (err) reject(err);
+                    resolve(result);
+                }
+            )
+        })
+    };
+
+    let getCoinsOfForum = (forum_id) => {
+        return new Promise((resolve, reject) => {
+            coins  = [];
+            conn.query(
+                "SELECT coin_id FROM Forum_Coin WHERE forum_id = ?",
+                [forum_id],
+                async (err, coins_id) => {
+                    console.log(coins_id);
+                    if (err) reject(err);
+                    for(let i=0;i<coins_id.length;i++){
+                        coins[i] = await getCoinById(coins_id[i].coin_id);
+                    }
+                    resolve(coins)
+                }
+            )
+        })
+    };
+    conn.query('SELECT Forums.id, category, title, content, Users.id AS author, Users.email, Users.username, Forums.created_at ' +
         'FROM Forums JOIN Users ON Forums.user_id = Users.id'
-        , (err, result) => {
+        , async (err, forums) => {
             if (err) throw err;
+
+            for(let i=0;i<forums.length;i++){
+                console.log(forums);
+                forums[i].coins = await getCoinsOfForum(forums[i].id);
+            }
             return res.status(200).json({
                 message: 'get all forums successfully',
-                forums:result
+                forums: forums
             });
         })
 };
 
 exports.createComment = (req, res) => {
-    const { forum_id } = req.params;
-    const { content } = req.body;
+    const {forum_id} = req.params;
+    const {content} = req.body;
     const timestamp = new Date();
     timestamp.setUTCHours(timestamp.getUTCHours());
     conn.query(
