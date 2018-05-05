@@ -17,7 +17,7 @@ const port = process.env.PORT || 3000;
  EXPRESS CONFIGURATION
  ==========================*/
 const app = express();
-app.use(cors())
+app.use(cors());
 // process.on('uncaughtException', function(err) {
 // 	console.log('Caught exception: ' + err);
 // });

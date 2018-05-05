@@ -40,8 +40,7 @@ exports.register = (req, res) => {
                                         return res.status(404).json({
                                             message: 'You already have this coin as favorite'
                                         })
-                                    }
-                                    else {
+                                    } else {
                                         conn.query('INSERT INTO Favorites(user_id, coin_id) VALUES (?,1)', [result.insertId], (err, result) => {
                                             if (err) throw err;
                                             return res.status(200).json({
@@ -99,7 +98,7 @@ exports.login = (req, res) => {
 };
 
 exports.me = (req, res) => {
-    conn.query('SELECT email, username from Users WHERE id=?', [req.decoded._id], (err, result) => {
+    conn.query('SELECT * from Users WHERE id=?', [req.decoded._id], (err, result) => {
         if (err) throw err;
         return res.status(200).json({
             me: result
