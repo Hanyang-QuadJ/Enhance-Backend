@@ -73,7 +73,7 @@ exports.updateForum = (req, res) => {
 };
 
 exports.getAllForum = (req, res) => {
-    conn.query('SELECT Forums.id, coin_id, category, title, content, Users.id, Users.email, Users.username ' +
+    conn.query('SELECT Forums.id, category, title, content, Users.id, Users.email, Users.username ' +
         'FROM Forums JOIN Users ON Forums.user_id = Users.id'
         , (err, result) => {
             if (err) throw err;
