@@ -91,7 +91,7 @@ exports.getAllForum = (req, res) => {
                 [coin_id],
                 (err, result) => {
                     if (err) reject(err);
-                    resolve(result);
+                    resolve(result[0]);
                 }
             )
         })
