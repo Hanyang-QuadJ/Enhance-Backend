@@ -13,5 +13,4 @@ router.use('/naver', naver);
 router.use('/favorite', favorite);
 router.use('/forum', forum);
 
-
 module.exports = router;

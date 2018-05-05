@@ -56,8 +56,5 @@ exports.getEveryFavorite = (req, res) => {
         return res.status(200).json({
             myFavorites: result
         });
-
     });
-
 };
-

@@ -12,6 +12,3 @@ exports.getAllCoin = (req, res) => {
         });
     });
 };
-
-
-
