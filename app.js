@@ -70,7 +70,7 @@ app.listen(port, () => {
 });
 
 
-/* =======================
+/* ========================
  JOB SCHEDULING
  ==========================*/
 
@@ -86,7 +86,6 @@ promiseRequest = (options) => {
         });
     });
 };
-
 
 getArticles = async (query) => {
     let ret = [];

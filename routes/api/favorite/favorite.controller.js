@@ -5,7 +5,6 @@ const conn = mysql.createConnection(config);
 
 exports.addFavorite = (req, res) => {
     const {coin_id} = req.body;
-
     conn.query('SELECT * from Favorites WHERE user_id = ? AND coin_id = ?',
         [req.decoded._id, coin_id], (err, result) => {
             if (result.length >= 1) {
