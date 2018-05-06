@@ -149,7 +149,7 @@ exports.createComment = (req, res) => {
 
 exports.getOneForum = (req, res) => {
     conn.query(
-        'SELECT * FROM Forums WHERE Forums.id = ?',
+        'SELECT * FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?',
         [req.query.forum_id],
         (err, result) => {
             if (err) throw err;
