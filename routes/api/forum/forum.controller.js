@@ -99,14 +99,14 @@ exports.getAllForum = (req, res) => {
 
     let getCoinsOfForum = (forum_id) => {
         return new Promise((resolve, reject) => {
-            coins  = [];
+            coins = [];
             conn.query(
                 "SELECT coin_id FROM Forum_Coin WHERE forum_id = ?",
                 [forum_id],
                 async (err, coins_id) => {
-                    console.log(coins_id);
+
                     if (err) reject(err);
-                    for(let i=0;i<coins_id.length;i++){
+                    for (let i = 0; i < coins_id.length; i++) {
                         coins[i] = await getCoinById(coins_id[i].coin_id);
                     }
                     resolve(coins)
@@ -114,17 +114,16 @@ exports.getAllForum = (req, res) => {
             )
         })
     };
-    conn.query('SELECT Forums.id, category, title, content, Users.id AS author, Users.email, Users.username, Forums.created_at ' +
-        'FROM Forums JOIN Users ON Forums.user_id = Users.id'
+    conn.query(`SELECT Forums.id, category, title, content, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `FROM Forums JOIN Users ON Forums.user_id = Users.id LIMIT 30 OFFSET ${req.query.index}`
         , async (err, forums) => {
             if (err) throw err;
 
-            for(let i=0;i<forums.length;i++){
-                console.log(forums);
+            for (let i = 0; i < forums.length; i++) {
                 forums[i].coins = await getCoinsOfForum(forums[i].id);
             }
             return res.status(200).json({
-                message: 'get all forums successfully',
+                nextIndex: parseInt(req.query.index) + 30,
                 forums: forums
             });
         })
@@ -148,7 +147,7 @@ exports.createComment = (req, res) => {
 };
 
 exports.getCommentList = (req, res) => {
-    const { forum_id } = req.params;
+    const {forum_id} = req.params;
     conn.query(
         'SELECT id, content, user_id, created_at, username, profile_img, point FROM Comments NATURAL JOIN Users WHERE forum_id = ?',
         [forum_id],
@@ -158,7 +157,7 @@ exports.getCommentList = (req, res) => {
             })
         }
     )
-}
+};
 
 exports.getOneForum = (req, res) => {
     conn.query(
@@ -174,7 +173,7 @@ exports.getOneForum = (req, res) => {
 };
 
 exports.forumView = (req, res) => {
-    const { forum_id } = req.params;
+    const {forum_id} = req.params;
     conn.query(
         'UPDATE Forums SET view_cnt = view_cnt+1 WHERE id = ?',
         [forum_id],
@@ -185,4 +184,4 @@ exports.forumView = (req, res) => {
             })
         }
     )
-}
+};

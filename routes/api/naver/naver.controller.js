@@ -11,7 +11,7 @@ exports.naverNewsSearch = (req, res) => {
         (err, result) => {
             if(err) throw err;
             return res.status(200).json({
-                nextIndex: parseInt(req.query.index) + 10,
+                nextIndex: parseInt(req.query.index) + 30,
                 result
             })
         }
