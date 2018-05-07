@@ -20,8 +20,8 @@ exports.createForum = (req, res) => {
         })
     }
     conn.query(
-        'INSERT INTO Forums(category, title, content, user_id, created_at) VALUES (?,?,?,?,?)',
-        [category, title, content, req.decoded._id, timestamp], (err, result) => {
+        'INSERT INTO Forums(category, title, content, user_id, created_at, view_cnt) VALUES (?,?,?,?,?)',
+        [category, title, content, req.decoded._id, timestamp, 0], (err, result) => {
             if (err) throw err;
             coin_list.forEach(async (coin) => {
                 await coin_input(coin, result.insertId);
@@ -136,8 +136,8 @@ exports.createComment = (req, res) => {
     const timestamp = new Date();
     timestamp.setUTCHours(timestamp.getUTCHours());
     conn.query(
-        'INSERT INTO Comments(content, forum_id, created_at) VALUES(?, ? ,?)',
-        [content, forum_id, timestamp],
+        'INSERT INTO Comments(content, forum_id, created_at, user_id) VALUES(?, ? ,?, ?)',
+        [content, forum_id, timestamp, req.decoded._id],
         (err) => {
             if (err) throw err;
             return res.status(200).json({
@@ -146,6 +146,19 @@ exports.createComment = (req, res) => {
         }
     )
 };
+
+exports.getCommentList = (req, res) => {
+    const { forum_id } = req.params;
+    conn.query(
+        'SELECT id, content, user_id, created_at, username, profile_img, point FROM Comments NATURAL JOIN Users WHERE forum_id = ?',
+        [forum_id],
+        (err, result) => {
+            return res.status(200).json({
+                result
+            })
+        }
+    )
+}
 
 exports.getOneForum = (req, res) => {
     conn.query(
@@ -159,3 +172,17 @@ exports.getOneForum = (req, res) => {
         }
     )
 };
+
+exports.forumView = (req, res) => {
+    const { forum_id } = req.params;
+    conn.query(
+        'UPDATE Forums SET view_cnt = view_cnt+1 WHERE id = ?',
+        [forum_id],
+        (err, result) => {
+            if (err) throw err;
+            return res.status(200).json({
+                message: 'view_cnt + 1'
+            })
+        }
+    )
+}
