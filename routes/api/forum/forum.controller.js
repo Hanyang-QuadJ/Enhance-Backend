@@ -114,7 +114,7 @@ exports.getAllForum = (req, res) => {
             )
         })
     };
-    conn.query(`SELECT Forums.id, category, title, content, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+    conn.query(`SELECT Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id LIMIT 30 OFFSET ${req.query.index}`
         , async (err, forums) => {
             if (err) throw err;
