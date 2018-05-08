@@ -149,7 +149,7 @@ exports.createComment = (req, res) => {
 exports.getCommentList = (req, res) => {
     const {forum_id} = req.params;
     conn.query(
-        'SELECT id, content, user_id, created_at, username, profile_img, point FROM Comments NATURAL JOIN Users WHERE forum_id = ?',
+        'SELECT id, content, user_id, created_at, username, profile_img, point FROM Comments JOIN Users ON Comments.user_id = Users.id WHERE forum_id = ?',
         [forum_id],
         (err, result) => {
             return res.status(200).json({
