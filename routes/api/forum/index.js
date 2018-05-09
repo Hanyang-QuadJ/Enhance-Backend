@@ -8,6 +8,7 @@ router.post('/create', controller.createForum);
 router.post('/delete', controller.deleteForum);
 router.post('/update', controller.updateForum);
 router.post('/view/:forum_id', controller.forumView);
+router.get('/user', controller.getForumByUserId);
 router.get('/all', controller.getAllForum);
 router.get('/one', controller.getOneForum);
 router.get('/coin/:forum_id', controller.getForumCoin);
