@@ -16,46 +16,56 @@ exports.register = (req, res) => {
     conn.query('SELECT * from Users WHERE email=?', [email], (err, rows) => {
         if (err) throw err;
         else if (rows.length === 0) {
-            conn.query(
-                'INSERT INTO Users(email, username, password) VALUES (?, ?, ?)',
-                [email, username, encrypted],
-                (err, result) => {
-                    if (err) throw err;
-                    console.log(result);
-                    jwt.sign(
-                        {
-                            _id: result.insertId,
-                            email: email,
-                        },
-                        secret,
-                        {
-                            expiresIn: '7d',
-                            issuer: 'rebay_admin',
-                            subject: 'userInfo'
-                        }, (err, token) => {
-                            if (err) return res.status(406).json({message: 'register failed'});
-                            conn.query('SELECT * from Favorites WHERE user_id = ? AND coin_id = 1',
-                                [result.insertId], (err, result2) => {
-                                    if (result2.length >= 1) {
-                                        return res.status(404).json({
-                                            message: 'You already have this coin as favorite'
-                                        })
-                                    } else {
-                                        conn.query('INSERT INTO Favorites(user_id, coin_id) VALUES (?,1)', [result.insertId], (err, result) => {
-                                            if (err) throw err;
-                                            return res.status(200).json({
-                                                message: 'registered successfully',
-                                                token
-                                            });
-                                        })
-                                    }
+            conn.query('SELECT * from Users WHERE username=?',[username], (err, rows2) => {
+                if(err) throw err;
+                else if (rows2.length === 0) {
+                    conn.query(
+                        'INSERT INTO Users(email, username, password) VALUES (?, ?, ?)',
+                        [email, username, encrypted],
+                        (err, result) => {
+                            if (err) throw err;
+                            console.log(result);
+                            jwt.sign(
+                                {
+                                    _id: result.insertId,
+                                    email: email,
+                                },
+                                secret,
+                                {
+                                    expiresIn: '7d',
+                                    issuer: 'rebay_admin',
+                                    subject: 'userInfo'
+                                }, (err, token) => {
+                                    if (err) return res.status(406).json({message: 'register failed'});
+                                    conn.query('SELECT * from Favorites WHERE user_id = ? AND coin_id = 1',
+                                        [result.insertId], (err, result2) => {
+                                            if (result2.length >= 1) {
+                                                return res.status(404).json({
+                                                    message: 'You already have this coin as favorite'
+                                                })
+                                            } else {
+                                                conn.query('INSERT INTO Favorites(user_id, coin_id) VALUES (?,1)', [result.insertId], (err, result) => {
+                                                    if (err) throw err;
+                                                    return res.status(200).json({
+                                                        message: 'registered successfully',
+                                                        token
+                                                    });
+                                                })
+                                            }
+                                        });
+
                                 });
-                            
                         });
-                });
+                } else {
+                    return res.status(406).json({
+                        message: 'username exists'
+                    })
+                }
+            })
+
         } else {
             return res.status(406).json({
-                message: 'user email or username exists'
+                message: 'user email exists'
             })
         }
     });
