@@ -7,4 +7,5 @@ router.use('/all', authMiddleware);
 router.post('/add', controller.addFavorite);
 router.post('/remove', controller.removeFavorite);
 router.get('/all', controller.getEveryFavorite);
+router.get('', controller.getFavoriteByUserId);
 module.exports = router;

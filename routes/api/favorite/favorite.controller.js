@@ -57,3 +57,13 @@ exports.getEveryFavorite = (req, res) => {
         });
     });
 };
+
+exports.getFavoriteByUserId = (req, res) => {
+    conn.query(`SELECT kor,full,abbr,coin_id,user_id from Coins JOIN Favorites On Coins.id = Favorites.coin_id WHERE Favorites.user_id=${req.query.user_id}`,
+        (err, result) => {
+            if (err) throw err;
+            return res.status(200).json({
+                myFavorites: result
+            });
+        });
+};

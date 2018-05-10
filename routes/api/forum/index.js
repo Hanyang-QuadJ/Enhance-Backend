@@ -15,6 +15,7 @@ router.get('/coin/:forum_id', controller.getForumCoin);
 
 router.post('/create/comment/:forum_id', controller.createComment);
 router.get('/comment/:forum_id', controller.getCommentList);
+router.get('/comment', controller.getCommentByUserId);
 
 // router.post('/delete/comment/:forum_id', controller.deleteComment);
 // router.post('/update/comment/:forum_id', controller.updateComment);

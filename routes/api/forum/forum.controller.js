@@ -118,7 +118,7 @@ exports.updateForum = (req, res) => {
 
 exports.getAllForum = (req, res) => {
     conn.query(
-        `SELECT Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.id, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id LIMIT 30 OFFSET ${
             req.query.index
             }`,
@@ -228,6 +228,18 @@ exports.getCommentList = (req, res) => {
     conn.query(
         "SELECT Comments.id, content, user_id, created_at, username, profile_img, point FROM Comments JOIN Users ON Comments.user_id = Users.id WHERE forum_id = ?",
         [forum_id],
+        (err, result) => {
+            return res.status(200).json({
+                result
+            });
+        }
+    );
+};
+
+exports.getCommentByUserId = (req, res) => {
+    conn.query(
+        `SELECT Comments.id, Comments.forum_id, content, user_id, created_at, username, profile_img, point FROM Comments JOIN Users ON Comments.user_id = Users.id WHERE Users.id = ${req.query.user_id}`,
+
         (err, result) => {
             return res.status(200).json({
                 result
