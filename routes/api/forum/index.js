@@ -7,7 +7,7 @@ router.use('/update', authMiddleware);
 router.post('/create', controller.createForum);
 router.post('/delete', controller.deleteForum);
 router.post('/update', controller.updateForum);
-router.post('/view/:forum_id', controller.forumView);
+router.post('/coin', controller.getForumByCoins);
 router.get('/user', controller.getForumByUserId);
 router.get('/all', controller.getAllForum);
 router.get('/one', controller.getOneForum);

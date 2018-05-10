@@ -154,6 +154,58 @@ exports.getForumByUserId = (req, res) => {
     );
 };
 
+exports.getForumByCoins = async (req, res) => {
+    const {coins} = req.body;
+    let forums_id = [];
+    let result = [];
+    let getForumBycoin = (coins_id) => {
+        return new Promise((resolve, reject) => {
+            let queryString = 'SELECT DISTINCT forum_id FROM Forum_Coin WHERE coin_id = ';
+            queryString += coins_id[0];
+            for (let i = 1; i < coins_id.length; i++) {
+                queryString += ' or coin_id = ';
+                queryString += coins_id[i];
+            }
+            conn.query(
+                queryString,
+                (err, result) => {
+                    if (err) reject(err);
+                    resolve(result);
+                }
+            );
+        });
+    };
+    let getForumByid = (id) => {
+        return new Promise((resolve, reject) => {
+            conn.query(
+                'SELECT Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ' +
+                'FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?',
+                [id],
+                async (err, forums) => {
+                    if (err) throw err;
+
+                    for (let i = 0; i < forums.length; i++) {
+                        forums[i].coins = await getCoinsOfForum(forums[i].id);
+                    }
+                    resolve(forums);
+
+                }
+            );
+        });
+    };
+    let forums = await getForumBycoin(coins);
+    forums = JSON.parse(JSON.stringify(forums));
+    for (let i = 0; i < forums.length; i++) {
+        // console.log(forums_id);
+        result[i] = await getForumByid(forums[i].forum_id);
+
+    }
+    return res.status(200).json({
+        result
+    });
+
+};
+
 exports.createComment = (req, res) => {
     const {forum_id} = req.params;
     const {content} = req.body;
