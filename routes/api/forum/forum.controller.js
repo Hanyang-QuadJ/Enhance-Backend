@@ -274,3 +274,65 @@ exports.forumView = (req, res) => {
         }
     );
 };
+
+exports.forumLike = (req, res) => {
+  const { forum_id } = req.params;
+  conn.query(
+    "INSERT INTO Likes(user_id, forum_id) VALUES(?, ?)",
+    [req.decoded._id, forum_id],
+    (err, result) => {
+      if (err) throw err;
+      conn.query(
+        "UPDATE Forums SET like_cnt = like_cnt+1 WHERE id = ?",
+        [forum_id],
+        (err, result) => {
+          if (err) throw err;
+          return res.status(200).json({
+            message: "like_cnt + 1"
+          });
+        }
+      )
+    }
+  )
+}
+
+exports.forumDislike = (req, res) => {
+  const { forum_id } = req.params;
+  conn.query(
+    "DELETE FROM Likes WHERE user_id = ? and forum_id = ?",
+    [req.decoded._id, forum_id],
+    (err, result) => {
+      if (err) throw err;
+      conn.query(
+        "UPDATE Forums SET like_cnt = like_cnt-1 WHERE id = ?",
+        [forum_id],
+        (err, result) => {
+          if (err) throw err;
+          return res.status(200).json({
+            message: "like_cnt - 1"
+          });
+        }
+      )
+    }
+  )
+}
+
+exports.forumLikeCheck = (req, res) => {
+  const { forum_id } = req.params;
+  conn.query(
+    "SELECT * FROM Likes WHERE user_id = ? and forum_id = ?",
+    [req.decoded._id, forum_id],
+    (err, result) => {
+      if (err) throw err;
+      if (result.length == 0) {
+        return res.status(200).json({
+          message: "it's okay to like this forum"
+        })
+      } else {
+        return res.status(406).json({
+          message: "You already liked this forum"
+        })
+      }
+    }
+  )
+}
