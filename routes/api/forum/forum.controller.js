@@ -118,7 +118,7 @@ exports.updateForum = (req, res) => {
 
 exports.getAllForum = (req, res) => {
     conn.query(
-        `SELECT Forums.id, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.id,Forums.like_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id order by created_at asc LIMIT 30 OFFSET ${
             req.query.index
             }`,
