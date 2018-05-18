@@ -72,6 +72,48 @@ exports.createForum = (req, res) => {
 
     // }
 };
+
+exports.updateForum = (req, res) => {
+    const {id, coin_list, category, title, content} = req.body;
+    const timestamp = new Date();
+    timestamp.setUTCHours(timestamp.getUTCHours());
+    let coin_input = (coin_id, forum_id) => {
+        return new Promise((resolve, reject) => {
+            conn.query(
+                "INSERT INTO Forum_Coin(forum_id, coin_id) VALUES(?, ?)",
+                [forum_id, coin_id],
+                (err, result) => {
+                    if (err) reject(err);
+                    resolve();
+                }
+            );
+        });
+    };
+    conn.query(
+        "DELETE FROM Forum_Coin WHERE forum_id = ?",
+        [id],
+        (err, result) => {
+            if (err) throw err;
+            conn.query(
+                "UPDATE Forums SET category = ?, title = ?, content = ?, user_id = ?, created_at = ? WHERE id = ?",
+                [category, title, content, req.decoded._id, timestamp, id],
+                (err, result) => {
+                    if (err) throw err;
+                    coin_list.forEach(async coin => {
+                        await coin_input(coin, id);
+                    });
+                    return res.status(200).json({
+                        message:"success"
+                    });
+                }
+            );
+        }
+    )
+
+}
+
+
+
 exports.getForumCoin = (req, res) => {
     const {forum_id} = req.params;
     conn.query(
@@ -94,27 +136,6 @@ exports.deleteForum = (req, res) => {
     });
 };
 
-exports.updateForum = (req, res) => {
-    const {id, coin_id, category, title, content} = req.body;
-    const timestamp = new Date();
-    timestamp.setUTCHours(timestamp.getUTCHours());
-    if (coin_id > 30 || coin_id < 1) {
-        return res.status(404).json({
-            message: "coin type wrong"
-        });
-    } else {
-        conn.query(
-            "UPDATE Forums SET coin_id = ?, category = ?, title = ?, content = ?, user_id = ?, created_at = ? WHERE id = ?",
-            [coin_id, category, title, content, req.decoded._id, timestamp, id],
-            (err, result) => {
-                if (err) throw err;
-                return res.status(200).json({
-                    message: "update forum successfully"
-                });
-            }
-        );
-    }
-};
 
 exports.getAllForum = (req, res) => {
     conn.query(
@@ -276,63 +297,63 @@ exports.forumView = (req, res) => {
 };
 
 exports.forumLike = (req, res) => {
-  const { forum_id } = req.params;
-  conn.query(
-    "INSERT INTO Likes(user_id, forum_id) VALUES(?, ?)",
-    [req.decoded._id, forum_id],
-    (err, result) => {
-      if (err) throw err;
-      conn.query(
-        "UPDATE Forums SET like_cnt = like_cnt+1 WHERE id = ?",
-        [forum_id],
+    const {forum_id} = req.params;
+    conn.query(
+        "INSERT INTO Likes(user_id, forum_id) VALUES(?, ?)",
+        [req.decoded._id, forum_id],
         (err, result) => {
-          if (err) throw err;
-          return res.status(200).json({
-            message: "like_cnt + 1"
-          });
+            if (err) throw err;
+            conn.query(
+                "UPDATE Forums SET like_cnt = like_cnt+1 WHERE id = ?",
+                [forum_id],
+                (err, result) => {
+                    if (err) throw err;
+                    return res.status(200).json({
+                        message: "like_cnt + 1"
+                    });
+                }
+            )
         }
-      )
-    }
-  )
+    )
 }
 
 exports.forumDislike = (req, res) => {
-  const { forum_id } = req.params;
-  conn.query(
-    "DELETE FROM Likes WHERE user_id = ? and forum_id = ?",
-    [req.decoded._id, forum_id],
-    (err, result) => {
-      if (err) throw err;
-      conn.query(
-        "UPDATE Forums SET like_cnt = like_cnt-1 WHERE id = ?",
-        [forum_id],
+    const {forum_id} = req.params;
+    conn.query(
+        "DELETE FROM Likes WHERE user_id = ? and forum_id = ?",
+        [req.decoded._id, forum_id],
         (err, result) => {
-          if (err) throw err;
-          return res.status(200).json({
-            message: "like_cnt - 1"
-          });
+            if (err) throw err;
+            conn.query(
+                "UPDATE Forums SET like_cnt = like_cnt-1 WHERE id = ?",
+                [forum_id],
+                (err, result) => {
+                    if (err) throw err;
+                    return res.status(200).json({
+                        message: "like_cnt - 1"
+                    });
+                }
+            )
         }
-      )
-    }
-  )
+    )
 }
 
 exports.forumLikeCheck = (req, res) => {
-  const { forum_id } = req.params;
-  conn.query(
-    "SELECT * FROM Likes WHERE user_id = ? and forum_id = ?",
-    [req.decoded._id, forum_id],
-    (err, result) => {
-      if (err) throw err;
-      if (result.length == 0) {
-        return res.status(200).json({
-          message: "it's okay to like this forum"
-        })
-      } else {
-        return res.status(406).json({
-          message: "You already liked this forum"
-        })
-      }
-    }
-  )
+    const {forum_id} = req.params;
+    conn.query(
+        "SELECT * FROM Likes WHERE user_id = ? and forum_id = ?",
+        [req.decoded._id, forum_id],
+        (err, result) => {
+            if (err) throw err;
+            if (result.length == 0) {
+                return res.status(200).json({
+                    message: "it's okay to like this forum"
+                })
+            } else {
+                return res.status(406).json({
+                    message: "You already liked this forum"
+                })
+            }
+        }
+    )
 }
