@@ -244,6 +244,20 @@ exports.createComment = (req, res) => {
     );
 };
 
+exports.deleteComment = (req, res) => {
+    const {comment_id} = req.body;
+    conn.query(
+        "DELETE FROM Comments WHERE id = ?",
+        [comment_id],
+        err => {
+            if (err) throw err;
+            return res.status(200).json({
+                message: "comment removed successfully"
+            });
+        }
+    );
+};
+
 exports.getCommentList = (req, res) => {
     const {forum_id} = req.params;
     conn.query(
