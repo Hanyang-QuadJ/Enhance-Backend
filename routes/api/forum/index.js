@@ -24,7 +24,7 @@ router.use("/like/check/:forum_id", authMiddleware);
 router.post("/like/:forum_id", controller.forumLike);
 router.post("/dislike/:forum_id", controller.forumDislike);
 router.get("/like/check/:forum_id", controller.forumLikeCheck);
-router.post('/delete/comment', controller.deleteComment);
+router.delete('/delete/comment', controller.deleteComment);
 // router.post('/update/comment/:forum_id', controller.updateComment);
 
 module.exports = router;
