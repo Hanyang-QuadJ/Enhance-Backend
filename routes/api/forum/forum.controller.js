@@ -159,7 +159,7 @@ exports.getAllForum = (req, res) => {
 
 exports.getForumByUserId = (req, res) => {
     conn.query(
-        `SELECT Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.like_cnt, Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.user_id=${req.query.user_id}
             `,
         async (err, forums) => {
