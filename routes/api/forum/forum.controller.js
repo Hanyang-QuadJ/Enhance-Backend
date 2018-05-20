@@ -95,8 +95,8 @@ exports.updateForum = (req, res) => {
         (err, result) => {
             if (err) throw err;
             conn.query(
-                "UPDATE Forums SET category = ?, title = ?, content = ?, user_id = ?, created_at = ? WHERE id = ?",
-                [category, title, content, req.decoded._id, timestamp, id],
+                "UPDATE Forums SET category = ?, title = ?, content = ?, user_id = ? WHERE id = ?",
+                [category, title, content, req.decoded._id, id],
                 (err, result) => {
                     if (err) throw err;
                     coin_list.forEach(async coin => {
