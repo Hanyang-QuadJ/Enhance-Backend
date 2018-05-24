@@ -199,7 +199,7 @@ exports.getForumByCoins = async (req, res) => {
     let getForumByid = (id) => {
         return new Promise((resolve, reject) => {
             conn.query(
-                'SELECT Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ' +
+                'SELECT Forums.id,like_cnt, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ' +
                 'FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?',
                 [id],
                 async (err, forums) => {
