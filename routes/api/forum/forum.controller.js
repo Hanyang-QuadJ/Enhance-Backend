@@ -233,7 +233,7 @@ exports.getForumByCoins = async (req, res) => {
                     for (let i = 0; i < forums.length; i++) {
                         forums[i].coins = await getCoinsOfForum(forums[i].id);
                     }
-                    resolve(forums);
+                    resolve(forums[0]);
 
                 }
             );
