@@ -35,7 +35,7 @@ let getCoinsOfForum = forum_id => {
 };
 
 exports.createForum = (req, res) => {
-    const {coin_list, category, title, content} = req.body;
+    const {coin_list, category, title, content, pic_list} = req.body;
     const timestamp = new Date();
     timestamp.setUTCHours(timestamp.getUTCHours());
     let coin_input = (coin_id, forum_id) => {
@@ -50,6 +50,36 @@ exports.createForum = (req, res) => {
             );
         });
     };
+    const d = new Date();
+    d.setUTCHours(d.getUTCHours());
+
+    let pic_input = (result, pic, index) => {
+        return new Promise((resolve, reject) => {
+            const picKey = d.getFullYear() + '_'
+                + d.getMonth() + '_'
+                + d.getDate() + '_'
+                + crypto.randomBytes(20).toString('hex') +
+                + req.decoded._id + '.jpg';
+            const picUrl = `https://s3.ap-northeast-2.amazonaws.com/hooahu/${picKey}`;
+            let buf = new Buffer(pic.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+            s3.putObject({
+                Bucket: 'hooahu',
+                Key: picKey,
+                Body: buf,
+                ACL: 'public-read'
+            }, function (err, response) {
+                if (err) {
+                    if (err) reject(err);
+                } else {
+                    // console.log(response)
+                    conn.query('INSERT INTO Images(forum_id, img_url) VALUES(?, ?)', [result.insertId, picUrl], (err) => {
+                        if (err) reject(err);
+                        resolve();
+                    })
+                }
+            });
+        })
+    }
     conn.query(
         "INSERT INTO Forums(category, title, content, user_id, created_at, view_cnt) VALUES (?,?,?,?,?,?)",
         [category, title, content, req.decoded._id, timestamp, 0],
@@ -58,19 +88,14 @@ exports.createForum = (req, res) => {
             coin_list.forEach(async coin => {
                 await coin_input(coin, result.insertId);
             });
+            pic_list.forEach(async (pic) => {
+                await pic_input(result, pic);
+            });
             return res.status(200).json({
                 forum_id: result.insertId
             });
         }
     );
-    // if (coin_id > 30 || coin_id < 1) {
-    //     return res.status(404).json({
-    //         message: 'coin type wrong'
-    //     })
-    // }
-    // else {
-
-    // }
 };
 
 exports.updateForum = (req, res) => {
