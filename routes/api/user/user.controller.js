@@ -9,10 +9,24 @@ exports.getUserById = (req, res) => {
     conn.query(
         `SELECT email, username, profile_img, point FROM Users WHERE id = ${req.query.user_id}`,
         (err, result) => {
-            if(err) throw err;
+            if (err) throw err;
             return res.status(200).json({
                 result
             })
         }
     )
 };
+
+exports.updateUsername = (req, res) => {
+    const {username} = req.body;
+    console.log(req.decoded._id);
+    conn.query(
+        `UPDATE Users SET username = '${username}' WHERE id = ${req.decoded._id}`,
+        (err, result) => {
+            if (err) throw err;
+            return res.status(200).json({
+                message:"success"
+            })
+        }
+    )
+}
