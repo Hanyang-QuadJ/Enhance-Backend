@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const controller = require('./naver.controller');
 
-router.get('/search/news', controller.naverNewsSearch);
-router.get('/search/blogs', controller.naverBlogSearch);
+router.get('/search/news', controller.naverSearch);
+
 
 module.exports = router;
