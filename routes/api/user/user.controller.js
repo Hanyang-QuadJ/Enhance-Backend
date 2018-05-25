@@ -25,8 +25,21 @@ exports.updateUsername = (req, res) => {
         (err, result) => {
             if (err) throw err;
             return res.status(200).json({
-                message:"success"
+                message: "success"
             })
         }
     )
+}
+
+exports.deleteUser = (req, res) => {
+    conn.query(
+        `DELETE FROM Users WHERE id = ${req.params.id}`,
+        (err) => {
+            if (err) throw err;
+            return res.status(200).json({
+                message: "success"
+            })
+        }
+    )
+
 }

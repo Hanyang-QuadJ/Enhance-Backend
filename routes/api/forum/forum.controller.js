@@ -59,7 +59,7 @@ exports.createForum = (req, res) => {
                 + d.getMonth() + '_'
                 + d.getDate() + '_'
                 + crypto.randomBytes(20).toString('hex') +
-                + req.decoded._id + '.jpg';
+                +req.decoded._id + '.jpg';
             const picUrl = `https://s3.ap-northeast-2.amazonaws.com/hooahu/${picKey}`;
             let buf = new Buffer(pic.replace(/^data:image\/\w+;base64,/, ''), 'base64');
             s3.putObject({
@@ -91,9 +91,16 @@ exports.createForum = (req, res) => {
             pic_list.forEach(async (pic) => {
                 await pic_input(result, pic);
             });
-            return res.status(200).json({
-                forum_id: result.insertId
-            });
+            conn.query(
+                `UPDATE Users SET point=point+3 WHERE id=${req.decoded._id}`,
+                (err, result) => {
+                    if (err) throw err;
+                    return res.status(200).json({
+                        forum_id: result.insertId
+                    });
+                }
+            )
+
         }
     );
 };
@@ -128,7 +135,7 @@ exports.updateForum = (req, res) => {
                         await coin_input(coin, id);
                     });
                     return res.status(200).json({
-                        message:"success"
+                        message: "success"
                     });
                 }
             );
@@ -136,7 +143,6 @@ exports.updateForum = (req, res) => {
     )
 
 }
-
 
 
 exports.getForumCoin = (req, res) => {
@@ -262,9 +268,15 @@ exports.createComment = (req, res) => {
         [content, forum_id, timestamp, req.decoded._id],
         err => {
             if (err) throw err;
-            return res.status(200).json({
-                message: "comment created successfully"
-            });
+            conn.query(
+                `UPDATE Users SET point=point+3 WHERE id=${req.decoded._id}`,
+                err => {
+                    if (err) throw err;
+                    return res.status(200).json({
+                        message: "comment created successfully"
+                    });
+                }
+            )
         }
     );
 };
@@ -438,7 +450,7 @@ exports.forumLikeCheck = (req, res) => {
     )
 }
 
-exports.forumHateCheck = (req,res) => {
+exports.forumHateCheck = (req, res) => {
     const {forum_id} = req.params;
     conn.query(
         "SELECT * FROM Dislikes WHERE user_id = ? and forum_id = ?",
