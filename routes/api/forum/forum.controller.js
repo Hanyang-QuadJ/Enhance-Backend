@@ -350,6 +350,11 @@ exports.getOneForum = (req, res) => {
                         view_cnt: forum[0].view_cnt,
                         like_cnt: forum[0].like_cnt,
                         dislike_cnt: forum[0].dislike_cnt,
+                        email: forum[0].email,
+                        username: forum[0].username,
+                        // password: forum[0].password,
+                        profile_img: forum[0].profile_img,
+                        point: forum[0].point,
                         image: image
                     }
                     return res.status(200).json({
