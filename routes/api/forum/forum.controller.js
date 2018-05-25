@@ -4,6 +4,10 @@ const config = require("../../../config");
 const conn = mysql.createConnection(config);
 const crypto = require('crypto');
 
+const AWS = require('aws-sdk');
+AWS.config.region = 'ap-northeast-2';
+const s3 = new AWS.S3();
+
 
 let getCoinById = coin_id => {
     return new Promise((resolve, reject) => {
