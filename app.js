@@ -28,9 +28,8 @@ app.use(function (req, res, next) {
     next();
 });
 // parse JSON and url-encoded query
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
-
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit: 50000}));
 
 
 app.use(express.static('apidoc'));
@@ -82,6 +81,8 @@ promiseRequest = (options) => {
             if (!error && res.statusCode === 200) {
                 resolve(body);
             } else {
+                console.log(body);
+                console.log(res.statusCode);
                 reject(error);
             }
         });
@@ -150,4 +151,67 @@ refreshNews = async () => {
 // refreshNews();
 
 
+// });
+
+getBlogs = async (query) => {
+    let ret = [];
+    let displayed = 100;
+    let start = 1;
+    while (displayed === 100 && start < 101) {
+        const api_url = 'https://openapi.naver.com/v1/search/blog?query=' + encodeURI(query) + '&display=' + encodeURI(100) + '&start=' + encodeURI(start);
+        const options = {
+            url: api_url,
+            headers: {'X-Naver-Client-Id': config.client_id, 'X-Naver-Client-Secret': config.client_secret}
+        };
+        let body = await promiseRequest(options);
+        body = JSON.parse(body);
+
+        displayed = body.display;
+        start += 100;
+        console.log(body.start + " / " + body.total + " : " + body.display);
+        ret.push(...body.items);
+    }
+    return new Promise((resolve, reject) => {
+        resolve(ret);
+    });
+};
+
+insertBlogs = (article, coin_id, source) => {
+    return new Promise((resolve, reject) => {
+        console.log(article);
+        conn.query('INSERT INTO Blogs (title, link, description,bloggername, pubDate, coin_id, source) VALUES (?,?,?,?,?,?,?)',
+            [article.title, article.link, article.description, article.bloggername, article.postdate, coin_id, source], (err, result) => {
+                if (err) throw err;
+                else {
+                    console.log(result);
+                    resolve(result);
+                }
+            });
+    });
+};
+
+truncateBlogs = () => {
+    return new Promise((resolve, reject) => {
+        conn.query('TRUNCATE Blogs', (err, result) => {
+            if (err) reject(err);
+            else {
+                resolve(result);
+            }
+        });
+    });
+};
+refreshBlogs = async () => {
+    let articles = [];
+    await truncateBlogs();
+    for (let i = 0; i < searchKeyword.coins.length; i++) {
+    // for (let i = 0; i < 1; i++) {
+        articles = await getBlogs(searchKeyword.coins[i].searchKeyword);
+        for (let j = 0; j < articles.length; j++) {
+            await insertBlogs(articles[j], i + 1, "naver");
+        }
+    }
+};
+// cron.schedule('*/60 * * * * *', async function () {
+//
+//     refreshBlogs();
 // });
