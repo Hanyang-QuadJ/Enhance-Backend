@@ -88,15 +88,15 @@ exports.createForum = (req, res) => {
     conn.query(
         "INSERT INTO Forums(category, title, content, user_id, created_at, view_cnt) VALUES (?,?,?,?,?,?)",
         [category, title, content, req.decoded._id, timestamp, 0],
-        (err, result) => {
+        async (err, result) => {
             if (err) throw err;
-            coin_list.forEach(async coin => {
+            await coin_list.forEach(async coin => {
                 await coin_input(coin, result.insertId);
             });
-            pic_list.forEach(async (pic) => {
+            await pic_list.forEach(async (pic) => {
                 await pic_input(result, pic);
             });
-            conn.query(
+            await conn.query(
                 `UPDATE Users SET point=point+3 WHERE id=${req.decoded._id}`,
                 (err, result) => {
                     if (err) throw err;
