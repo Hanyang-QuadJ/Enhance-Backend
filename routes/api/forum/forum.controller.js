@@ -2,6 +2,11 @@ const jwt = require("jsonwebtoken");
 const mysql = require("mysql");
 const config = require("../../../config");
 const conn = mysql.createConnection(config);
+const crypto = require('crypto');
+
+const AWS = require('aws-sdk');
+AWS.config.region = 'ap-northeast-2';
+const s3 = new AWS.S3();
 
 
 let getCoinById = coin_id => {
@@ -53,17 +58,17 @@ exports.createForum = (req, res) => {
     const d = new Date();
     d.setUTCHours(d.getUTCHours());
 
-    let pic_input = (result, pic, index) => {
+    let pic_input = (result, pic) => {
         return new Promise((resolve, reject) => {
             const picKey = d.getFullYear() + '_'
                 + d.getMonth() + '_'
                 + d.getDate() + '_'
                 + crypto.randomBytes(20).toString('hex') +
                 +req.decoded._id + '.jpg';
-            const picUrl = `https://s3.ap-northeast-2.amazonaws.com/hooahu/${picKey}`;
+            const picUrl = `https://s3.ap-northeast-2.amazonaws.com/inhance/${picKey}`;
             let buf = new Buffer(pic.replace(/^data:image\/\w+;base64,/, ''), 'base64');
             s3.putObject({
-                Bucket: 'hooahu',
+                Bucket: 'inhance',
                 Key: picKey,
                 Body: buf,
                 ACL: 'public-read'
@@ -83,19 +88,23 @@ exports.createForum = (req, res) => {
     conn.query(
         "INSERT INTO Forums(category, title, content, user_id, created_at, view_cnt) VALUES (?,?,?,?,?,?)",
         [category, title, content, req.decoded._id, timestamp, 0],
-        (err, result) => {
+        async (err, result) => {
             if (err) throw err;
-            coin_list.forEach(async coin => {
+            await coin_list.forEach(async (coin) => {
+                await console.log('1')
                 await coin_input(coin, result.insertId);
             });
-            pic_list.forEach(async (pic) => {
+            await pic_list.forEach(async (pic) => {
+                await console.log('2')
                 await pic_input(result, pic);
             });
-            conn.query(
+            await conn.query(
                 `UPDATE Users SET point=point+3 WHERE id=${req.decoded._id}`,
-                (err, result) => {
+                async (err, result1) => {
                     if (err) throw err;
-                    return res.status(200).json({
+                    await console.log('3')
+                    await console.log(result1)
+                    await res.status(200).json({
                         forum_id: result.insertId
                     });
                 }
