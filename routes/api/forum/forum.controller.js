@@ -91,15 +91,18 @@ exports.createForum = (req, res) => {
         async (err, result) => {
             if (err) throw err;
             await coin_list.forEach(async coin => {
+                console.log('1')
                 await coin_input(coin, result.insertId);
             });
             await pic_list.forEach(async (pic) => {
+                console.log('2')
                 await pic_input(result, pic);
             });
             await conn.query(
                 `UPDATE Users SET point=point+3 WHERE id=${req.decoded._id}`,
                 (err, result) => {
                     if (err) throw err;
+                    console.log('3')
                     return res.status(200).json({
                         forum_id: result.insertId
                     });
