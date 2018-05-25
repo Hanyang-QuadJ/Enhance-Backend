@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const mysql = require("mysql");
 const config = require("../../../config");
 const conn = mysql.createConnection(config);
+const crypto = require('crypto');
 
 
 let getCoinById = coin_id => {
@@ -53,7 +54,7 @@ exports.createForum = (req, res) => {
     const d = new Date();
     d.setUTCHours(d.getUTCHours());
 
-    let pic_input = (result, pic, index) => {
+    let pic_input = (result, pic) => {
         return new Promise((resolve, reject) => {
             const picKey = d.getFullYear() + '_'
                 + d.getMonth() + '_'
