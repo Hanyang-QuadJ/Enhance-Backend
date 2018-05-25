@@ -332,11 +332,20 @@ exports.getOneForum = (req, res) => {
     conn.query(
         "SELECT * FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?",
         [req.query.forum_id],
-        (err, result) => {
+        (err, forum) => {
             if (err) throw err;
-            return res.status(200).json({
-                result
-            });
+            conn.query(
+                "SELECT * FROM Images WHERE forum_id = ?",
+                [req.query.forum_id],
+                (err, image) => {
+                    if (err) throw err;
+                    return res.status(200).json({
+                        forum,
+                        image
+                    });
+                }
+            )
+            
         }
     );
 };
