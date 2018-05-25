@@ -61,10 +61,10 @@ exports.createForum = (req, res) => {
                 + d.getDate() + '_'
                 + crypto.randomBytes(20).toString('hex') +
                 +req.decoded._id + '.jpg';
-            const picUrl = `https://s3.ap-northeast-2.amazonaws.com/hooahu/${picKey}`;
+            const picUrl = `https://s3.ap-northeast-2.amazonaws.com/inhance/${picKey}`;
             let buf = new Buffer(pic.replace(/^data:image\/\w+;base64,/, ''), 'base64');
             s3.putObject({
-                Bucket: 'hooahu',
+                Bucket: 'inhance',
                 Key: picKey,
                 Body: buf,
                 ACL: 'public-read'
