@@ -329,6 +329,7 @@ exports.getCommentByUserId = (req, res) => {
 };
 
 exports.getOneForum = (req, res) => {
+    // let result = [];
     conn.query(
         "SELECT * FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?",
         [req.query.forum_id],
@@ -339,9 +340,20 @@ exports.getOneForum = (req, res) => {
                 [req.query.forum_id],
                 (err, image) => {
                     if (err) throw err;
+                    let result = {
+                        id: forum[0].id,
+                        category: forum[0].category,
+                        title: forum[0].title,
+                        content: forum[0].content,
+                        user_id: forum[0].user_id,
+                        created_at: forum[0].created_at,
+                        view_cnt: forum[0].view_cnt,
+                        like_cnt: forum[0].like_cnt,
+                        dislike_cnt: forum[0].dislike_cnt,
+                        image: image
+                    }
                     return res.status(200).json({
-                        forum,
-                        image
+                        result
                     });
                 }
             )
