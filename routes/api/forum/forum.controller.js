@@ -197,6 +197,27 @@ exports.getAllForum = (req, res) => {
     );
 };
 
+exports.getForumByType = (req, res) => {
+    const {category} = req.body;
+    conn.query(
+        `SELECT Forums.id,Forums.like_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.category = '${category}' order by created_at asc LIMIT 30 OFFSET ${
+            req.query.index
+            }`,
+        async (err, forums) => {
+            if (err) throw err;
+
+            for (let i = 0; i < forums.length; i++) {
+                forums[i].coins = await getCoinsOfForum(forums[i].id);
+            }
+            return res.status(200).json({
+                nextIndex: parseInt(req.query.index) + 30,
+                forums: forums
+            });
+        }
+    );
+};
+
 exports.getForumByUserId = (req, res) => {
     conn.query(
         `SELECT Forums.like_cnt, Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +

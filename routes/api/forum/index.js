@@ -11,6 +11,7 @@ router.post("/view/:forum_id", controller.forumView);
 router.post("/coin", controller.getForumByCoins);
 router.get("/user", controller.getForumByUserId);
 router.get("/all", controller.getAllForum);
+router.post("/filter", controller.getForumByType);
 router.get("/one", controller.getOneForum);
 router.get("/coin/:forum_id", controller.getForumCoin);
 
