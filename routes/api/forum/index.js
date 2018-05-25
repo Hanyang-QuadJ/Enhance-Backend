@@ -17,7 +17,12 @@ router.get("/coin/:forum_id", controller.getForumCoin);
 router.post("/create/comment/:forum_id", controller.createComment);
 router.get("/comment/:forum_id", controller.getCommentList);
 router.get("/comment", controller.getCommentByUserId);
-
+router.use("/hate/:forum_id", authMiddleware);
+router.use("/unhate/:forum_id", authMiddleware);
+router.use("/hate/check/:forum_id", authMiddleware);
+router.post("/hate/:forum_id", controller.forumHate);
+router.post("/unhate/:forum_id", controller.forumUnhate);
+router.get("/hate/check/:forum_id", controller.forumHateCheck);
 router.use("/like/:forum_id", authMiddleware);
 router.use("/dislike/:forum_id", authMiddleware);
 router.use("/like/check/:forum_id", authMiddleware);

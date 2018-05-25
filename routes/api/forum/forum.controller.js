@@ -376,6 +376,48 @@ exports.forumDislike = (req, res) => {
     )
 }
 
+exports.forumHate = (req, res) => {
+    const {forum_id} = req.params;
+    conn.query(
+        "INSERT INTO Dislikes(user_id, forum_id) VALUES(?, ?)",
+        [req.decoded._id, forum_id],
+        (err, result) => {
+            if (err) throw err;
+            conn.query(
+                "UPDATE Forums SET dislike_cnt = dislike_cnt+1 WHERE id = ?",
+                [forum_id],
+                (err, result) => {
+                    if (err) throw err;
+                    return res.status(200).json({
+                        message: "success"
+                    });
+                }
+            )
+        }
+    )
+}
+
+exports.forumUnhate = (req, res) => {
+    const {forum_id} = req.params;
+    conn.query(
+        "DELETE FROM Dislikes WHERE user_id = ? and forum_id = ?",
+        [req.decoded._id, forum_id],
+        (err, result) => {
+            if (err) throw err;
+            conn.query(
+                "UPDATE Forums SET dislike_cnt = dislike_cnt-1 WHERE id = ?",
+                [forum_id],
+                (err, result) => {
+                    if (err) throw err;
+                    return res.status(200).json({
+                        message: "success"
+                    });
+                }
+            )
+        }
+    )
+}
+
 exports.forumLikeCheck = (req, res) => {
     const {forum_id} = req.params;
     conn.query(
@@ -390,6 +432,26 @@ exports.forumLikeCheck = (req, res) => {
             } else {
                 return res.status(406).json({
                     message: "You already liked this forum"
+                })
+            }
+        }
+    )
+}
+
+exports.forumHateCheck = (req,res) => {
+    const {forum_id} = req.params;
+    conn.query(
+        "SELECT * FROM Dislikes WHERE user_id = ? and forum_id = ?",
+        [req.decoded._id, forum_id],
+        (err, result) => {
+            if (err) throw err;
+            if (result.length == 0) {
+                return res.status(200).json({
+                    message: "it's okay to dislike this forum"
+                })
+            } else {
+                return res.status(406).json({
+                    message: "You already disliked this forum"
                 })
             }
         }
