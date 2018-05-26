@@ -167,8 +167,8 @@ exports.getForumCoin = (req, res) => {
     );
 };
 exports.deleteForum = (req, res) => {
-    const {id} = req.body;
-    conn.query("DELETE FROM Forums WHERE id = ?", [id], (err, result) => {
+    const {forum_id} = req.params;
+    conn.query("DELETE FROM Forums WHERE id = ?", [forum_id], (err, result) => {
         if (err) throw err;
         return res.status(200).json({
             message: "delete forum successfully"
@@ -179,7 +179,7 @@ exports.deleteForum = (req, res) => {
 
 exports.getAllForum = (req, res) => {
     conn.query(
-        `SELECT Forums.id,Forums.like_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.id,Forums.like_cnt,Forums.dislike_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id order by created_at asc LIMIT 30 OFFSET ${
             req.query.index
             }`,
@@ -220,7 +220,7 @@ exports.getForumByType = (req, res) => {
 
 exports.getForumByUserId = (req, res) => {
     conn.query(
-        `SELECT Forums.like_cnt, Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.like_cnt,Forums.dislike_cnt, Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.user_id=${req.query.user_id}
             `,
         async (err, forums) => {
@@ -237,17 +237,29 @@ exports.getForumByUserId = (req, res) => {
 };
 
 exports.getForumByCoins = async (req, res) => {
-    const {coins} = req.body;
+    const {coins, category} = req.body;
     let forums_id = [];
     let result = [];
     let getForumBycoin = (coins_id) => {
         return new Promise((resolve, reject) => {
-            let queryString = 'SELECT DISTINCT forum_id FROM Forum_Coin WHERE coin_id = ';
+            let queryString;
+            if (category === "전체") {
+                queryString = `SELECT DISTINCT forum_id FROM Forum_Coin JOIN Forums ON Forums.id = forum_id WHERE coin_id = `;
+            }
+            else {
+                queryString = `SELECT DISTINCT forum_id FROM Forum_Coin JOIN Forums ON Forums.id = forum_id WHERE Forums.category = "` + category + `" and (coin_id = `;
+            }
             queryString += coins_id[0];
             for (let i = 1; i < coins_id.length; i++) {
-                queryString += ' or coin_id = ';
+                queryString += ` or coin_id = `;
                 queryString += coins_id[i];
             }
+            if (category !== "전체") {
+                queryString += `)`;
+            }
+            queryString += ` order by created_at asc LIMIT 30 OFFSET ${
+                req.query.index
+                }`;
             conn.query(
                 queryString,
                 (err, result) => {
@@ -259,8 +271,9 @@ exports.getForumByCoins = async (req, res) => {
     };
     let getForumByid = (id) => {
         return new Promise((resolve, reject) => {
+
             conn.query(
-                'SELECT Forums.id,like_cnt, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ' +
+                'SELECT Forums.id,Forums.dislike_cnt,like_cnt, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ' +
                 'FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?',
                 [id],
                 async (err, forums) => {
@@ -279,10 +292,13 @@ exports.getForumByCoins = async (req, res) => {
     forums = JSON.parse(JSON.stringify(forums));
     for (let i = 0; i < forums.length; i++) {
         // console.log(forums_id);
-        result[i] = await getForumByid(forums[i].forum_id);
-
+        ret = await getForumByid(forums[i].forum_id);
+        if (ret) {
+            result[result.length] = ret;
+        }
     }
     return res.status(200).json({
+        nextIndex: parseInt(req.query.index) + 30,
         result
     });
 
@@ -378,7 +394,7 @@ exports.getOneForum = (req, res) => {
                     });
                 }
             )
-            
+
         }
     );
 };

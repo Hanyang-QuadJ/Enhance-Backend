@@ -7,4 +7,6 @@ router.use('', authMiddleware);
 router.patch('', controller.updateUsername);
 router.use('', authMiddleware);
 router.delete("/:id", controller.deleteUser);
+router.use('', authMiddleware);
+router.patch('/email', controller.changeEmail);
 module.exports = router;
