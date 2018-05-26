@@ -7,7 +7,7 @@ router.use("/update", authMiddleware);
 router.post("/create", controller.createForum);
 router.delete("/:forum_id", controller.deleteForum);
 router.post("/update", controller.updateForum);
-router.post("/view/:forum_id", controller.forumView);
+// router.post("/view/:forum_id", controller.forumView);
 router.post("/coin", controller.getForumByCoins);
 router.get("/user", controller.getForumByUserId);
 router.get("/all", controller.getAllForum);
@@ -32,5 +32,6 @@ router.post("/dislike/:forum_id", controller.forumDislike);
 router.get("/like/check/:forum_id", controller.forumLikeCheck);
 router.delete('/delete/comment', controller.deleteComment);
 // router.post('/update/comment/:forum_id', controller.updateComment);
-
+router.use("/view/:forum_id",authMiddleware);
+router.post("/view/:forum_id",controller.forumsView);
 module.exports = router;

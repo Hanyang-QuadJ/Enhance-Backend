@@ -161,7 +161,7 @@ exports.updateForum = (req, res) => {
                                 resolve();
                             })
                         }
-                    )   
+                    )
                 }
             });
         })
@@ -596,6 +596,38 @@ exports.forumHateCheck = (req, res) => {
                 return res.status(406).json({
                     message: "You already disliked this forum"
                 })
+            }
+        }
+    )
+}
+
+exports.forumsView = (req, res) => {
+    const {forum_id} = req.params;
+    conn.query(
+        `SELECT * FROM Views WHERE forum_id = ${forum_id} and user_id = ${req.decoded._id}`,
+        (err, result) => {
+            if (result.length !== 0) {
+                return res.status(200).json({
+                    message: "already View"
+                })
+            }
+            else {
+                conn.query(
+                    `INSERT INTO Views (user_id,forum_id) VALUES (${req.decoded._id},${forum_id})`,
+                    (err, result) => {
+                        if (err) throw err;
+                        conn.query(
+                            "UPDATE Forums SET view_cnt = view_cnt+1 WHERE id = ?",
+                            [forum_id],
+                            (err, result) => {
+                                if (err) throw err;
+                                return res.status(200).json({
+                                    message: "view_cnt + 1"
+                                });
+                            }
+                        );
+                    }
+                )
             }
         }
     )
