@@ -179,8 +179,18 @@ getBlogs = async (query) => {
 insertBlogs = (article, coin_id, source) => {
     return new Promise((resolve, reject) => {
         console.log(article);
+        let link = article.link;
+        let result;
+        if(link.indexOf("naver")!== -1){
+            let parsedLink = link.split('?');
+            let number = parsedLink[1].split('logNo=');
+            result = parsedLink[0]+'/'+number[1];
+        }
+        else {
+            result = link;
+        }
         conn.query('INSERT INTO Blogs (title, link, description,bloggername, pubDate, coin_id, source) VALUES (?,?,?,?,?,?,?)',
-            [article.title, article.link, article.description, article.bloggername, article.postdate, coin_id, source], (err, result) => {
+            [article.title, result, article.description, article.bloggername, article.postdate, coin_id, source], (err, result) => {
                 if (err) throw err;
                 else {
                     console.log(result);
