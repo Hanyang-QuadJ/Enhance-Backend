@@ -9,4 +9,8 @@ router.use('', authMiddleware);
 router.delete("/:id", controller.deleteUser);
 router.use('', authMiddleware);
 router.patch('/email', controller.changeEmail);
+
+router.use('/profile', authMiddleware);
+router.put('/profile', controller.changeProfileImage);
+
 module.exports = router;
