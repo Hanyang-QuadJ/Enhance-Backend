@@ -176,7 +176,18 @@ exports.deleteForum = (req, res) => {
     });
 };
 
-
+function getImagesOfForum(forum_id) {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT * FROM Images WHERE forum_id = ?",
+            [forum_id],
+            (err, result) => {
+                if (err) throw err;
+                resolve(result);
+            }
+        )
+    })
+}
 exports.getAllForum = (req, res) => {
     conn.query(
         `SELECT Forums.id,Forums.like_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
@@ -188,6 +199,7 @@ exports.getAllForum = (req, res) => {
 
             for (let i = 0; i < forums.length; i++) {
                 forums[i].coins = await getCoinsOfForum(forums[i].id);
+                forums[i].images = await getImagesOfForum(forums[i].id);
             }
             return res.status(200).json({
                 nextIndex: parseInt(req.query.index) + 30,
