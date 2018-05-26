@@ -82,7 +82,7 @@ exports.deleteUser = (req, res) => {
 }
 
 exports.changeEmail = (req, res) => {
-    const {email} = req.body;
+    const { email } = req.body;
     conn.query(
         `SELECT * FROM Users WHERE email = '${email}'`,
         (err, result) => {
@@ -100,6 +100,39 @@ exports.changeEmail = (req, res) => {
                             message:"success"
                         })
                     }
+                )
+            }
+        }
+    )
+}
+
+exports.changePassword = (req, res) => {
+    const { old_password, new_password } = req.body;
+    const old_encrypted = crypto.createHmac('sha1', config.secret)
+        .update(old_password)
+        .digest('base64');
+    const new_encrypted = crypto.createHmac('sha1', config.secret)
+        .update(new_password)
+        .digest('base64');
+    conn.query(
+        "SELECT * FROM Users WHERE id = ? and password = ?",
+        [req.decoded._id, old_encrypted],
+        (err, result) => {
+            if (err) throw err;
+            if (result.length == 0) {
+                return res.status(406).json({
+                    message: 'you are not allowed'
+                })
+            } else {
+                conn.query(
+                    "UPDATE Users SET password = ? WHERE id = ?",
+                    [new_encrypted, req.decoded._id],
+                    (err, result) => {
+                        if (err) throw err;
+                        return res.status(200).json({
+                            message: "password updated"
+                        })
+                    } 
                 )
             }
         }

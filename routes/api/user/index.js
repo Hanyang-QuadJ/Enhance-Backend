@@ -13,4 +13,7 @@ router.patch('/email', controller.changeEmail);
 router.use('/profile', authMiddleware);
 router.put('/profile', controller.changeProfileImage);
 
+router.use('/password', authMiddleware);
+router.put('/password', controller.changePassword);
+
 module.exports = router;
