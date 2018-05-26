@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d65631b-7895-4415-97d2-d32acfe6f17c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
       <change beforePath="$PROJECT_DIR$/routes/api/forum/forum.controller.js" afterPath="$PROJECT_DIR$/routes/api/forum/forum.controller.js" />
-      <change beforePath="$PROJECT_DIR$/routes/api/forum/index.js" afterPath="$PROJECT_DIR$/routes/api/forum/index.js" />
-      <change beforePath="$PROJECT_DIR$/routes/api/user/index.js" afterPath="$PROJECT_DIR$/routes/api/user/index.js" />
-      <change beforePath="$PROJECT_DIR$/routes/api/user/user.controller.js" afterPath="$PROJECT_DIR$/routes/api/user/user.controller.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -84,8 +79,8 @@
       <file leaf-file-name="forum.controller.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routes/api/forum/forum.controller.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="602">
-              <caret line="305" column="0" lean-forward="true" selection-start-line="305" selection-start-column="0" selection-end-line="305" selection-end-column="0" />
+            <state relative-caret-position="609">
+              <caret line="282" column="0" lean-forward="true" selection-start-line="282" selection-start-column="0" selection-end-line="282" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -349,12 +344,12 @@
       <workItem from="1525675653451" duration="11667000" />
       <workItem from="1526626006645" duration="2813000" />
       <workItem from="1526816676600" duration="1053000" />
-      <workItem from="1527120667056" duration="19061000" />
+      <workItem from="1527120667056" duration="20642000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="72559000" />
+    <option name="totallyTimeSpent" value="74140000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1440" y="0" width="1920" height="1200" extended-state="0" />
@@ -721,14 +716,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/api/naver/naver.controller.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="26" column="45" lean-forward="true" selection-start-line="26" selection-start-column="45" selection-end-line="26" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/api/auth/auth.controller.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -769,10 +756,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/routes/api/naver/naver.controller.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="598">
+          <caret line="26" column="45" lean-forward="true" selection-start-line="26" selection-start-column="45" selection-end-line="26" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/routes/api/forum/forum.controller.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="602">
-          <caret line="305" column="0" lean-forward="true" selection-start-line="305" selection-start-column="0" selection-end-line="305" selection-end-column="0" />
+        <state relative-caret-position="609">
+          <caret line="282" column="0" lean-forward="true" selection-start-line="282" selection-start-column="0" selection-end-line="282" selection-end-column="0" />
           <folding />
         </state>
       </provider>
