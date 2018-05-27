@@ -319,9 +319,9 @@ exports.getForumByCoins = async (req, res) => {
                     }
                 }
             }
-            
+
             if(coins.length !== 0 || category !== "전체") {
-                queryString += ` and title LIKE '%${req.query.keyword}%' OR content LIKE '%${req.query.keyword}%'`
+                queryString += ` and (title LIKE '%${req.query.keyword}%' OR content LIKE '%${req.query.keyword}%')`
             }
             else {
                 queryString += ` WHERE title LIKE '%${req.query.keyword}%' OR content LIKE '%${req.query.keyword}%'`
