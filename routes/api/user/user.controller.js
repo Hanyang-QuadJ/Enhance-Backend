@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const mysql = require('mysql');
 const config = require('../../../config');
 const conn = mysql.createConnection(config);
+const nodemailer = require('nodemailer');
+const smtpPool = require('nodemailer-smtp-pool');
 const AWS = require('aws-sdk');
 AWS.config.region = 'ap-northeast-2';
 const s3 = new AWS.S3();
@@ -138,3 +140,57 @@ exports.changePassword = (req, res) => {
         }
     )
 }
+
+exports.emailVerification = (req, res) => {
+    let random_verify = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 20);
+    random_verify = random_verify.toString();
+    const encrypted = crypto.createHmac('sha1', config.secret)
+        .update(random_verify)
+        .digest('base64');
+    let smtpTransport = nodemailer.createTransport(smtpPool({
+        service: 'Gmail',
+        host: 'localhost',
+        port: '465',
+        tls: {
+            rejectUnauthorize: false
+        },
+
+        //이메일 전송을 위해 필요한 인증정보
+
+        //gmail 계정과 암호 
+        auth: {
+            user: 'dev.team.enhance@gmail.com',
+            pass: 'dlsgostmghkdlxld'
+        },
+        maxConnections: 5,
+        maxMessages: 10
+    }));
+
+    let mailOpt = {
+        from: 'Enhance User Service Team',
+        to: req.query.email,
+        subject: '인핸스에서 인증번호를 알려드립니다.',
+        html: `
+			<h3>인핸스(Enhance)에서 보내드리는 임시비밀번호는[<span style="color: #fa615c;">${random_verify}</span>]입니다.<br>
+			</h3>`
+    };
+    smtpTransport.sendMail(mailOpt, function (err, res) {
+        if (err) {
+            throw err;
+        } else {
+            smtpTransport.close();
+        }
+    });
+    
+    conn.query(
+        "UPDATE Users SET sub_password = ? WHERE email = ?",
+        [encrypted, req.query.email],
+        (err, result) => {
+            if (err) throw err;
+            return res.status(200).json({
+                temp_password: random_verify
+            })
+        }
+    )
+
+};
