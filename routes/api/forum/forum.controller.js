@@ -311,12 +311,13 @@ exports.getForumByCoins = async (req, res) => {
                     queryString += `)`;
                 }
                 else {
-                    queryString += ` WHERE coin_id = `;
+                    queryString += ` WHERE (coin_id = `;
                     queryString += coins_id[0];
                     for (let i = 1; i < coins_id.length; i++) {
                         queryString += ` or coin_id = `;
                         queryString += coins_id[i];
                     }
+                    queryString += `)`;
                 }
             }
 
