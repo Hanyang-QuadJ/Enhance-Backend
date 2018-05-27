@@ -311,7 +311,7 @@ exports.getForumByCoins = async (req, res) => {
                     queryString += `)`;
                 }
                 else {
-                    queryString += `WHERE coin_id = `;
+                    queryString += ` WHERE coin_id = `;
                     queryString += coins_id[0];
                     for (let i = 1; i < coins_id.length; i++) {
                         queryString += ` or coin_id = `;
@@ -319,7 +319,12 @@ exports.getForumByCoins = async (req, res) => {
                     }
                 }
             }
-
+            if(coins.length !== 0 || category !== "전체") {
+                queryString += ` and title LIKE '%${req.query.keyword}%' OR content LIKE '%${req.query.keyword}%'`
+            }
+            else {
+                queryString += ` WHERE title LIKE '%${req.query.keyword}%' OR content LIKE '%${req.query.keyword}%'`
+            }
             if (req.query.order == encodeURI(1)) {
                 queryString += ` order by created_at DESC LIMIT 30 OFFSET ${
                     req.query.index
