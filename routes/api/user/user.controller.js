@@ -142,7 +142,7 @@ exports.changePassword = (req, res) => {
 }
 
 exports.emailVerification = (req, res) => {
-    let random_verify = Math.floor(Math.random() * 10000000) + 1;
+    let random_verify = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 20);
     random_verify = random_verify.toString();
     const encrypted = crypto.createHmac('sha1', config.secret)
         .update(random_verify)
@@ -171,7 +171,7 @@ exports.emailVerification = (req, res) => {
         to: req.query.email,
         subject: '인핸스에서 인증번호를 알려드립니다.',
         html: `
-			<h3>인핸스(Enhance)에서 보내드리는 인증번호는[<span style="color: #fa615c;">${random_verify}</span>]입니다.<br>
+			<h3>인핸스(Enhance)에서 보내드리는 임시비밀번호는[<span style="color: #fa615c;">${random_verify}</span>]입니다.<br>
 			</h3>`
     };
     smtpTransport.sendMail(mailOpt, function (err, res) {
@@ -188,7 +188,7 @@ exports.emailVerification = (req, res) => {
         (err, result) => {
             if (err) throw err;
             return res.status(200).json({
-                message: random_verify
+                temp_password: random_verify
             })
         }
     )
