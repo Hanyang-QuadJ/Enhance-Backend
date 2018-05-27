@@ -34,4 +34,5 @@ router.delete('/delete/comment', controller.deleteComment);
 // router.post('/update/comment/:forum_id', controller.updateComment);
 router.use("/view/:forum_id",authMiddleware);
 router.post("/view/:forum_id",controller.forumsView);
+//router.get("/search/:keyword",controller.searchForums);
 module.exports = router;
