@@ -295,19 +295,31 @@ exports.getForumByCoins = async (req, res) => {
         return new Promise((resolve, reject) => {
             let queryString;
             if (category === "전체") {
-                queryString = `SELECT DISTINCT forum_id FROM Forum_Coin JOIN Forums ON Forums.id = forum_id WHERE coin_id = `;
+                queryString = `SELECT DISTINCT forum_id FROM Forum_Coin JOIN Forums ON Forums.id = forum_id `;
             }
             else {
-                queryString = `SELECT DISTINCT forum_id FROM Forum_Coin JOIN Forums ON Forums.id = forum_id WHERE Forums.category = "` + category + `" and (coin_id = `;
+                queryString = `SELECT DISTINCT forum_id FROM Forum_Coin JOIN Forums ON Forums.id = forum_id WHERE Forums.category = "` + category + `"`;
             }
-            queryString += coins_id[0];
-            for (let i = 1; i < coins_id.length; i++) {
-                queryString += ` or coin_id = `;
-                queryString += coins_id[i];
+            if(coins.length !== 0){
+                if(category !== "전체"){
+                    queryString += ` and (coin_id = `;
+                    queryString += coins_id[0];
+                    for (let i = 1; i < coins_id.length; i++) {
+                        queryString += ` or coin_id = `;
+                        queryString += coins_id[i];
+                    }
+                    queryString += `)`;
+                }
+                else {
+                    queryString += ` coin_id = `;
+                    queryString += coins_id[0];
+                    for (let i = 1; i < coins_id.length; i++) {
+                        queryString += ` or coin_id = `;
+                        queryString += coins_id[i];
+                    }
+                }
             }
-            if (category !== "전체") {
-                queryString += `)`;
-            }
+
             if (req.query.order == encodeURI(1)) {
                 queryString += ` order by created_at DESC LIMIT 30 OFFSET ${
                     req.query.index
@@ -318,7 +330,7 @@ exports.getForumByCoins = async (req, res) => {
                     req.query.index
                     }`;
             }
-
+            console.log(queryString);
             conn.query(
                 queryString,
                 (err, result) => {
