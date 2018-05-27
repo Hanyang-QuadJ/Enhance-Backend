@@ -94,7 +94,7 @@ getArticles = async (query) => {
     let displayed = 100;
     let start = 1;
     while (displayed === 100 && start < 1001) {
-        const api_url = 'https://openapi.naver.com/v1/search/news?query=' + encodeURI(query) + '&display=' + encodeURI(100) + '&start=' + encodeURI(start);
+        const api_url = 'https://openapi.naver.com/v1/search/news?query=' + encodeURI(query).replace("/\\+/gi", "%20") + '&display=' + encodeURI(100) + '&start=' + encodeURI(start);
         const options = {
             url: api_url,
             headers: {'X-Naver-Client-Id': config.client_id, 'X-Naver-Client-Secret': config.client_secret}

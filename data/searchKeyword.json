@@ -5,210 +5,210 @@
       "kor": "비트코인",
       "full": "Bitcoin",
       "abbr": "BTC",
-      "searchKeyword": "비트코인 Bitcoin"
+      "searchKeyword": "비트코인 | Bitcoin"
     },
     {
       "id": 2,
       "kor": "이오스",
       "full": "EOS",
       "abbr": "EOS",
-      "searchKeyword": "이오스 EOS"
+      "searchKeyword": "이오스 | EOS"
     },
     {
       "id": 3,
       "kor": "이더리움",
       "full": "Ethereum",
       "abbr": "ETH",
-      "searchKeyword": "이더리움 Ethereum"
+      "searchKeyword": "이더리움 | Ethereum"
     },
     {
       "id": 4,
       "kor": "리플",
       "full": "Ripple",
       "abbr": "XRP",
-      "searchKeyword": "리플 Ripple"
+      "searchKeyword": "리플 | Ripple"
     },
     {
       "id": 5,
       "kor": "비트코인 캐시",
       "full": "Bitcoin Cash",
       "abbr": "BCH",
-      "searchKeyword": "비트코인캐시 BitcoinCash"
+      "searchKeyword": "비트코인캐시 | BitcoinCash"
     },
     {
       "id": 6,
       "kor": "카르다노",
       "full": "Cardano",
       "abbr": "ADA",
-      "searchKeyword": "카르다노 Cardano"
+      "searchKeyword": "카르다노 | Cardano"
     },
     {
       "id": 7,
       "kor": "트론",
       "full": "Tronix",
       "abbr": "TRX",
-      "searchKeyword": "트론 Tronix"
+      "searchKeyword": "트론 | Tronix"
     },
     {
       "id": 8,
       "kor": "라이트코인",
       "full": "Litecoin",
       "abbr": "LTC",
-      "searchKeyword": "라이트코인 Litecoin"
+      "searchKeyword": "라이트코인 | Litecoin"
     },
     {
       "id": 9,
-      "kor": "이더리움 클래식",
+      "kor": "이더리움클래식",
       "full": "Etherium Classic",
       "abbr": "ETC",
-      "searchKeyword": "이더리움클래식 EtheriumClassic"
+      "searchKeyword": "이더리움클래식 | EtheriumClassic"
     },
     {
       "id": 10,
       "kor": "네오",
       "full": "NEO",
       "abbr": "NEO",
-      "searchKeyword": "네오 NEO"
+      "searchKeyword": "네오 | NEO"
     },
     {
       "id": 11,
       "kor": "모네로",
       "full": "Monero",
       "abbr": "XMR",
-      "searchKeyword": "모네로 Monero"
+      "searchKeyword": "모네로 | Monero"
     },
     {
       "id": 12,
       "kor": "대시",
       "full": "Digital Cash",
       "abbr": "DASH",
-      "searchKeyword": "대시 DigitalCash"
+      "searchKeyword": "대시 | DigitalCash"
     },
     {
       "id": 13,
       "kor": "비체인",
       "full": "Vechain",
       "abbr": "VEN",
-      "searchKeyword": "비체인 Vechain"
+      "searchKeyword": "비체인 | Vechain"
     },
     {
       "id": 14,
       "kor": "퀀텀",
       "full": "QTUM",
       "abbr": "QTUM",
-      "searchKeyword": "퀀텀 QTUM"
+      "searchKeyword": "퀀텀 | QTUM"
     },
     {
       "id": 15,
       "kor": "스텔라",
       "full": "Stellar",
       "abbr": "XLM",
-      "searchKeyword": "스텔라 Stellar"
+      "searchKeyword": "스텔라 | Stellar"
     },
     {
       "id": 16,
       "kor": "오미세고",
       "full": "OmiseGo",
       "abbr": "OMG",
-      "searchKeyword": "오미세고 OmiseGo"
+      "searchKeyword": "오미세고 | OmiseGo"
     },
     {
       "id": 17,
       "kor": "아이콘",
       "full": "ICON Project",
       "abbr": "ICX",
-      "searchKeyword": "아이콘 ICONProject"
+      "searchKeyword": "아이콘 | ICONProject"
     },
     {
       "id": 18,
       "kor": "비트코인 골드",
       "full": "Bitcoin Gold",
       "abbr": "BTG",
-      "searchKeyword": "비트코인골드 BitcoinGold"
+      "searchKeyword": "비트코인골드 | BitcoinGold"
     },
     {
       "id": 19,
       "kor": "제트캐시",
       "full": "ZCash",
       "abbr": "ZEC",
-      "searchKeyword": "제트캐시 ZCash"
+      "searchKeyword": "제트캐시 | ZCash"
     },
     {
       "id": 20,
       "kor": "엘프",
       "full": "Aelf",
       "abbr": "ELF",
-      "searchKeyword": "엘프 Aelf"
+      "searchKeyword": "엘프 | Aelf"
     },
     {
       "id": 21,
       "kor": "스팀",
       "full": "Steem",
       "abbr": "STEEM",
-      "searchKeyword": "스팀 Steem"
+      "searchKeyword": "스팀 | Steem"
     },
     {
       "id": 22,
       "kor": "리스크",
       "full": "Lisk",
       "abbr": "LSK",
-      "searchKeyword": "리스크 Lisk"
+      "searchKeyword": "리스크 | Lisk"
     },
     {
       "id": 23,
       "kor": "버지",
       "full": "Verge",
       "abbr": "XVG",
-      "searchKeyword": "버지 Verge"
+      "searchKeyword": "버지 | Verge"
     },
     {
       "id": 24,
       "kor": "미스릴",
       "full": "Mithril",
       "abbr": "MITH",
-      "searchKeyword": "미스릴 Mithril"
+      "searchKeyword": "미스릴 | Mithril"
     },
     {
       "id": 25,
       "kor": "모나코",
       "full": "Monaco",
       "abbr": "MCO",
-      "searchKeyword": "모나코 Monaco"
+      "searchKeyword": "모나코 | Monaco"
     },
     {
       "id": 26,
       "kor": "골렘",
       "full": "Golem Network Token",
       "abbr": "GNT",
-      "searchKeyword": "골렘 GolemNetworkToken"
+      "searchKeyword": "골렘 | GolemNetworkToken"
     },
     {
       "id": 27,
       "kor": "어거",
       "full": "Augur",
       "abbr": "REP",
-      "searchKeyword": "어거 Augur"
+      "searchKeyword": "어거 | Augur"
     },
     {
       "id": 28,
       "kor": "IOTA",
       "full": "IOTA",
       "abbr": "IOTA",
-      "searchKeyword": "IOTA IOTA"
+      "searchKeyword": "IOTA | IOTA"
     },
     {
       "id": 29,
       "kor": "네오가스",
       "full": "NEO gas",
       "abbr": "GAS",
-      "searchKeyword": "네오가스 NEOgas"
+      "searchKeyword": "네오가스 | NEOgas"
     },
     {
       "id": 30,
       "kor": "할랄체인",
       "full": "Halal Chain",
       "abbr": "HLC",
-      "searchKeyword": "할랄체인 HalalChain"
+      "searchKeyword": "할랄체인 | HalalChain"
     }
   ]
 }
