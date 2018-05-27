@@ -300,8 +300,8 @@ exports.getForumByCoins = async (req, res) => {
             else {
                 queryString = `SELECT DISTINCT forum_id FROM Forum_Coin JOIN Forums ON Forums.id = forum_id WHERE Forums.category = "` + category + `"`;
             }
-            if(coins.length !== 0){
-                if(category !== "전체"){
+            if (coins.length !== 0) {
+                if (category !== "전체") {
                     queryString += ` and (coin_id = `;
                     queryString += coins_id[0];
                     for (let i = 1; i < coins_id.length; i++) {
@@ -644,3 +644,18 @@ exports.forumsView = (req, res) => {
         }
     )
 }
+
+exports.searchForums = (req, res) => {
+    conn.query(
+        `SELECT * FROM Forums WHERE title LIKE '%${req.query.keyword}%' or content LIKE '%${req.query.keyword}%' LIMIT 30 OFFSET ${
+            req.query.index
+            }`,
+        (err,result)=>{
+            if(err) throw err;
+            return res.status(200).json({
+                nextIndex: parseInt(req.query.index) + 30,
+                result
+            });
+        }
+    )
+};
