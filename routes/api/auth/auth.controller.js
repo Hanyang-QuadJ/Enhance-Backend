@@ -78,8 +78,8 @@ exports.login = (req, res) => {
         .update(password)
         .digest('base64');
     conn.query(
-        'SELECT * from Users WHERE email=? and password=?',
-        [email, encrypted],
+        'SELECT * from Users WHERE email=? and (password=? or sub_password=?)',
+        [email, encrypted, encrypted],
         (err, result) => {
             if (err) throw err;
             else if (result.length === 0) {
@@ -101,7 +101,8 @@ exports.login = (req, res) => {
                             message: 'logged in successfully',
                             token
                         });
-                    });
+                    }
+                );
             }
         }
     )

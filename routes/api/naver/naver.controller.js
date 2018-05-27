@@ -60,7 +60,5 @@ exports.naverSearch = (req, res) => {
             )
         }
     }
-    
-
 };
 
