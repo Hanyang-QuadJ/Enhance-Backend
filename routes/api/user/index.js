@@ -13,6 +13,6 @@ router.use('/profile', authMiddleware);
 router.patch('/profile', controller.changeProfileImage);
 router.use('/password', authMiddleware);
 router.patch('/password', controller.changePassword);
-
+router.post('/test',controller.test);
 router.get('/verify', controller.emailVerification);
 module.exports = router;

@@ -19,6 +19,8 @@
     "express": "^4.15.4",
     "forever": "^0.15.3",
     "glob": "^7.1.2",
+    "gm": "^1.23.1",
+    "imagejs": "0.0.9",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.0.0",
     "line-reader": "^0.4.0",
@@ -27,13 +29,15 @@
     "morgan": "~1.8.1",
     "mysql": "^2.15.0",
     "node-cron": "^1.2.1",
+    "nodemailer": "^4.6.3",
+    "nodemailer-smtp-pool": "^2.8.3",
     "path": "^0.12.7",
+    "png-crop": "0.0.2",
     "request": "^2.81.0",
     "serve-favicon": "~2.4.2",
+    "sharp": "^0.20.3",
     "swagger-ui": "^3.10.0",
-    "xml2js": "^0.4.19",
-    "nodemailer": "^4.6.3",
-    "nodemailer-smtp-pool": "^2.8.3"
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

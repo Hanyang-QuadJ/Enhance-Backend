@@ -8,7 +8,80 @@ const smtpPool = require('nodemailer-smtp-pool');
 const AWS = require('aws-sdk');
 AWS.config.region = 'ap-northeast-2';
 const s3 = new AWS.S3();
+const fs = require('fs');
+var path = require('path');
+var buffer = require('buffer');
+const ImageJS = require("imagejs");
+const sharp = require('sharp');
+const gm = require('gm');
+function encode_base64(filename){
+    return new Promise((resolve, reject) => {
+        fs.readFile(filename,function(error,data){
+            if(error){
+                throw error;
+            }else{
+                var buf = Buffer.from(data);
+                var base64 = buf.toString('base64');
+                console.log(base64)
+                resolve(base64);
+            }
+        })
+    });
 
+}
+
+
+function decode_base64(base64str , filename){
+    return new Promise((resolve, reject) => {
+        var buf = Buffer.from(base64str,'base64');
+
+        fs.writeFile(filename, buf, function(error){
+            if(error){
+                throw error;
+            }else{
+                console.log('File created from base64 string!');
+                resolve();
+            }
+        });
+    });
+
+
+}
+exports.test = async (req, res) => {
+    // // decode_base64(base64,'beforeCrop.jpg');
+    // // bitmap.readFile(filename)
+    // //     .then(function() {
+    // //         // bitmap is ready
+    // //     });
+    // // base64 = encode_base64('ddr.jpg');
+    // gm('/Users/jeonghyeonlee/Project/Enhance/Enhance-Backend/public/beforeCrop.jpg')
+    //     .crop(100, 100)
+    //     .write('/Users/jeonghyeonlee/Project/Enhance/Enhance-Backend/public/Cropped.jpg', (err) => {
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             console.log("success")
+    //         }
+    //     })
+
+    const base64 = req.body.base64;
+    var buf = Buffer.from(base64,'base64');
+    // decode_base64('any_base64_string_goes_here','rane.jpg');
+    var PNGCrop = require('png-crop');
+    // let base6 = await encode_base64('/Users/jeonghyeonlee/Project/Enhance/Enhance-Backend/public/beforeCrop.jpg');
+    await decode_base64(base64,'/Users/jeonghyeonlee/Project/Enhance/Enhance-Backend/public/beforeCrop1.png');
+// if you don't know the image's dimension and want to crop for a point all the
+// way til bottom right, just pass a big width/height
+//     var config1 = {width: 100, height: 62, top: 95, left: 110};
+// // pass a path, a buffer or a stream as the input
+    PNGCrop.crop('/Users/jeonghyeonlee/Project/Enhance/Enhance-Backend/public/beforeCrop1.jpg',
+        '/Users/jeonghyeonlee/Project/Enhance/Enhance-Backend/public/cropped.png'
+        , config1, function(err) {
+        if (err) throw err;
+        console.log('done!');
+    });
+    return res.status(200).json({mssage:"200"})
+}
 exports.getUserById = (req, res) => {
     conn.query(
         `SELECT email, username, profile_img, point FROM Users WHERE id = ${req.query.user_id}`,
@@ -22,10 +95,10 @@ exports.getUserById = (req, res) => {
 };
 
 exports.updateUsername = (req, res) => {
-    const {username} = req.body;
+    const {username, email} = req.body;
     console.log(req.decoded._id);
     conn.query(
-        `UPDATE Users SET username = '${username}' WHERE id = ${req.decoded._id}`,
+        `UPDATE Users SET username = '${username}' ,email = '${email}' WHERE id = ${req.decoded._id}`,
         (err, result) => {
             if (err) throw err;
             return res.status(200).json({
@@ -33,7 +106,7 @@ exports.updateUsername = (req, res) => {
             })
         }
     )
-}
+};
 
 exports.changeProfileImage = (req, res) => {
     const { base64 } = req.body;
@@ -45,6 +118,7 @@ exports.changeProfileImage = (req, res) => {
         + crypto.randomBytes(20).toString('hex') +
         + req.decoded._id + '.jpg';
     const picUrl = `https://s3-ap-northeast-2.amazonaws.com/inhance/${picKey}`;
+
     let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
     s3.putObject({
         Bucket: 'inhance',
