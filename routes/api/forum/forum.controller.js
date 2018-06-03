@@ -390,14 +390,14 @@ exports.createComment = (req, res) => {
     conn.query(
         "INSERT INTO Comments(content, forum_id, created_at, user_id) VALUES(?, ? ,?, ?)",
         [content, forum_id, timestamp, req.decoded._id],
-        err => {
+        (err, result) => {
             if (err) throw err;
             conn.query(
                 `UPDATE Users SET point=point+3 WHERE id=${req.decoded._id}`,
-                err => {
+                (err) => {
                     if (err) throw err;
                     return res.status(200).json({
-                        message: "comment created successfully"
+                        comment_id: result.insertId
                     });
                 }
             )
