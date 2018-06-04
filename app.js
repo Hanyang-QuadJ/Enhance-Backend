@@ -69,7 +69,9 @@ app.listen(port, () => {
     console.log(`Express is running on port ${port}`)
 });
 
-
+setInterval(function () {
+    conn.query('SELECT 1');
+}, 5000);
 /* ========================
  JOB SCHEDULING
  ==========================*/
