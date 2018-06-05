@@ -240,7 +240,7 @@ exports.emailVerification = (req, res) => {
     let mailOpt = {
         from: 'Enhance User Service Team',
         to: req.query.email,
-        subject: '인핸스에서 인증번호를 알려드립니다.',
+        subject: '인핸스에서 임시비밀번호를 알려드립니다.',
         html: `
 			<h3>인핸스(Enhance)에서 보내드리는 임시비밀번호는[<span style="color: #fa615c;">${random_verify}</span>]입니다.<br>
 			</h3>`
@@ -259,7 +259,7 @@ exports.emailVerification = (req, res) => {
         (err, result) => {
             if (err) throw err;
             return res.status(200).json({
-                temp_password: random_verify
+                message: 'succeed'
             })
         }
     )
