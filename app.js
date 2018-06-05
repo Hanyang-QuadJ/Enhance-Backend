@@ -70,6 +70,7 @@ app.listen(port, () => {
 });
 
 setInterval(function () {
+    console.log('yes')
     conn.query('SELECT 1');
 }, 3000);
 /* ========================

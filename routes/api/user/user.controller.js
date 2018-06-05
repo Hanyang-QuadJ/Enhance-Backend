@@ -11,9 +11,6 @@ const s3 = new AWS.S3();
 const fs = require('fs');
 var path = require('path');
 var buffer = require('buffer');
-const ImageJS = require("imagejs");
-const sharp = require('sharp');
-const gm = require('gm');
 function encode_base64(filename){
     return new Promise((resolve, reject) => {
         fs.readFile(filename,function(error,data){
