@@ -71,7 +71,7 @@ app.listen(port, () => {
 
 setInterval(function () {
     conn.query('SELECT 1');
-}, 5000);
+}, 3000);
 /* ========================
  JOB SCHEDULING
  ==========================*/
