@@ -93,16 +93,30 @@ exports.getUserById = (req, res) => {
 
 exports.updateUsername = (req, res) => {
     const {username, email} = req.body;
-    console.log(req.decoded._id);
+    // console.log(req.decoded._id);
     conn.query(
-        `UPDATE Users SET username = '${username}' ,email = '${email}' WHERE id = ${req.decoded._id}`,
+        "SELECT * FROM Users WHERE username = ? or email = ?",
+        [username, email],
         (err, result) => {
-            if (err) throw err;
-            return res.status(200).json({
-                message: "success"
-            })
+            if (err) return res.status(500).json({ err });
+            if (result.length == 0) {
+                conn.query(
+                    `UPDATE Users SET username = '${username}' ,email = '${email}' WHERE id = ${req.decoded._id}`,
+                    (err, result) => {
+                        if (err) throw err;
+                        return res.status(200).json({
+                            message: "success"
+                        })
+                    }
+                )
+            } else {
+                return res.status(406).json({
+                    message: '이메일 혹은 유저네임이 이미 존재합니다.'
+                })
+            }
         }
     )
+    
 };
 
 exports.changeProfileImage = (req, res) => {
