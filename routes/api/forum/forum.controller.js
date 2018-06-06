@@ -463,6 +463,7 @@ exports.getOneForum = (req, res) => {
                         content: forum[0].content,
                         user_id: forum[0].user_id,
                         created_at: forum[0].created_at,
+                        updated_at: forum[0].updated_at,
                         view_cnt: forum[0].view_cnt,
                         like_cnt: forum[0].like_cnt,
                         dislike_cnt: forum[0].dislike_cnt,
