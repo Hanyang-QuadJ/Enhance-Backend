@@ -1,0 +1,12 @@
+const router = require("express").Router();
+const controller = require("./admin.controller");
+const authMiddleware = require('../../../middlewares/auth');
+router.use('/forum/:forum_id',authMiddleware);
+router.delete("/forum/:forum_id", controller.deleteForum);
+router.use('/user',authMiddleware);
+router.delete("/user", controller.deleteUser);
+router.use('/coin',authMiddleware);
+router.post("/coin", controller.createCoin);
+router.use('/coin/:coin_id',authMiddleware);
+router.delete("/coin/:coin_id", controller.deleteCoin);
+module.exports = router;

@@ -29,6 +29,7 @@ exports.register = (req, res) => {
                                 {
                                     _id: result.insertId,
                                     email: email,
+                                    flag: 0,
                                 },
                                 secret,
                                 {
@@ -89,6 +90,7 @@ exports.login = (req, res) => {
                     {
                         _id: result[0].id,
                         email: result[0].email,
+                        flag: result[0].flag
                     },
                     secret,
                     {
