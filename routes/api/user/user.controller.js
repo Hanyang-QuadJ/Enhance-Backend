@@ -15,7 +15,7 @@ function encode_base64(filename){
     return new Promise((resolve, reject) => {
         fs.readFile(filename,function(error,data){
             if(error){
-                throw error;
+                return res.status(500).json({ err });r;
             }else{
                 var buf = Buffer.from(data);
                 var base64 = buf.toString('base64');
@@ -34,7 +34,7 @@ function decode_base64(base64str , filename){
 
         fs.writeFile(filename, buf, function(error){
             if(error){
-                throw error;
+                return res.status(500).json({ err });r;
             }else{
                 console.log('File created from base64 string!');
                 resolve();
@@ -74,7 +74,7 @@ exports.test = async (req, res) => {
     PNGCrop.crop('/Users/jeonghyeonlee/Project/Enhance/Enhance-Backend/public/beforeCrop1.jpg',
         '/Users/jeonghyeonlee/Project/Enhance/Enhance-Backend/public/cropped.png'
         , config1, function(err) {
-        if (err) throw err;
+        if (err) return res.status(500).json({ err });
         console.log('done!');
     });
     return res.status(200).json({mssage:"200"})
@@ -83,7 +83,7 @@ exports.getUserById = (req, res) => {
     conn.query(
         `SELECT email, username, profile_img, point FROM Users WHERE id = ${req.query.user_id}`,
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             return res.status(200).json({
                 result
             })
@@ -103,7 +103,7 @@ exports.updateUsername = (req, res) => {
                 conn.query(
                     `UPDATE Users SET username = '${username}' WHERE id = ${req.decoded._id}`,
                     (err, result) => {
-                        if (err) throw err;
+                        if (err) return res.status(500).json({ err });
                         return res.status(200).json({
                             message: "success"
                         })
@@ -145,7 +145,7 @@ exports.changeProfileImage = (req, res) => {
             conn.query(
                 `UPDATE Users SET profile_img = '${picUrl}' WHERE id = ${req.decoded._id}`,
                 (err, result) => {
-                    if (err) throw err;
+                    if (err) return res.status(500).json({ err });
                     return res.status(200).json({
                         message: "success"
                     })
@@ -159,7 +159,7 @@ exports.deleteUser = (req, res) => {
     conn.query(
         `DELETE FROM Users WHERE id = ${req.params.id}`,
         (err) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             return res.status(200).json({
                 message: "success"
             })
@@ -182,7 +182,7 @@ exports.changeEmail = (req, res) => {
                 conn.query(
                     `UPDATE Users SET email = '${email}' WHERE id = ${req.decoded._id}`,
                     (err, result) => {
-                        if(err) throw err;
+                        if(err) return res.status(500).json({ err });
                         return res.status(200).json({
                             message:"success"
                         })
@@ -205,7 +205,7 @@ exports.changePassword = (req, res) => {
         "SELECT * FROM Users WHERE id = ? and password = ?",
         [req.decoded._id, old_encrypted],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             if (result.length == 0) {
                 return res.status(406).json({
                     message: 'you are not allowed'
@@ -215,7 +215,7 @@ exports.changePassword = (req, res) => {
                     "UPDATE Users SET password = ? WHERE id = ?",
                     [new_encrypted, req.decoded._id],
                     (err, result) => {
-                        if (err) throw err;
+                        if (err) return res.status(500).json({ err });
                         return res.status(200).json({
                             message: "password updated"
                         })
@@ -278,7 +278,7 @@ exports.emailVerification = (req, res) => {
     };
     smtpTransport.sendMail(mailOpt, function (err, res) {
         if (err) {
-            throw err;
+            return res.status(500).json({ err });
         } else {
             smtpTransport.close();
         }
@@ -288,7 +288,7 @@ exports.emailVerification = (req, res) => {
         "UPDATE Users SET sub_password = ? WHERE email = ?",
         [encrypted, req.query.email],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             return res.status(200).json({
                 message: 'succeed'
             })

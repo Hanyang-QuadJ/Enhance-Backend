@@ -14,16 +14,16 @@ exports.register = (req, res) => {
         .update(password)
         .digest('base64');
     conn.query('SELECT * from Users WHERE email=?', [email], (err, rows) => {
-        if (err) throw err;
+        if (err) return res.status(500).json({ err });
         else if (rows.length === 0) {
             conn.query('SELECT * from Users WHERE username=?',[username], (err, rows2) => {
-                if(err) throw err;
+                if(err) return res.status(500).json({ err });
                 else if (rows2.length === 0) {
                     conn.query(
                         'INSERT INTO Users(email, username, password) VALUES (?, ?, ?)',
                         [email, username, encrypted],
                         (err, result) => {
-                            if (err) throw err;
+                            if (err) return res.status(500).json({ err });
                             console.log(result);
                             jwt.sign(
                                 {
@@ -46,7 +46,7 @@ exports.register = (req, res) => {
                                                 })
                                             } else {
                                                 conn.query('INSERT INTO Favorites(user_id, coin_id) VALUES (?,1)', [result.insertId], (err, result) => {
-                                                    if (err) throw err;
+                                                    if (err) return res.status(500).json({ err });
                                                     return res.status(200).json({
                                                         message: 'registered successfully',
                                                         token
@@ -82,7 +82,7 @@ exports.login = (req, res) => {
         'SELECT * from Users WHERE email=? and (password=? or sub_password=?)',
         [email, encrypted, encrypted],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             else if (result.length === 0) {
                 return res.status(406).json({message: 'login failed'});
             } else {
@@ -112,7 +112,7 @@ exports.login = (req, res) => {
 
 exports.me = (req, res) => {
     conn.query('SELECT * from Users WHERE id=?', [req.decoded._id], (err, result) => {
-        if (err) throw err;
+        if (err) return res.status(500).json({ err });
         return res.status(200).json({
             me: result
         });
