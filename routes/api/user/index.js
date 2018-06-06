@@ -2,7 +2,7 @@ const router = require('express').Router();
 const controller = require('./user.controller');
 const authMiddleware = require('../../../middlewares/auth');
 
-
+router.get('/email/check', controller.emailCheck);
 router.get('/verify', controller.emailVerification);
 router.get('', controller.getUserById);
 router.use('', authMiddleware);

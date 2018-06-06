@@ -211,7 +211,24 @@ exports.changePassword = (req, res) => {
         }
     )
 }
-
+exports.emailCheck = (req, res) => {
+    conn.query(
+        "SELECT * FROM Users WHERE email = ?",
+        [req.query.email],
+        (err, result) => {
+            if (err) return res.status(500).json({ err });
+            if (result.length == 0) {
+                return res.status(200).json({
+                    isDuplicate: false
+                })
+            } else {
+                return res.status(200).json({
+                    isDuplicate: true
+                })
+            }
+        }
+    )
+}
 exports.emailVerification = (req, res) => {
     let random_verify = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 20);
     random_verify = random_verify.toString();
