@@ -207,7 +207,7 @@ exports.getForumCoin = (req, res) => {
 exports.deleteForum = (req, res) => {
     const {forum_id} = req.params;
     conn.query("DELETE FROM Forums WHERE id = ?", [forum_id], (err, result) => {
-        if (err) throw err;
+        if (err) return res.status(500).json({ err });
         return res.status(200).json({
             message: "delete forum successfully"
         });
@@ -220,7 +220,7 @@ function getImagesOfForum(forum_id) {
             "SELECT * FROM Images WHERE forum_id = ?",
             [forum_id],
             (err, result) => {
-                if (err) throw err;
+                if (err) return res.status(500).json({ err });
                 resolve(result);
             }
         )
@@ -234,7 +234,7 @@ exports.getAllForum = (req, res) => {
             req.query.index
             }`,
         async (err, forums) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
 
             for (let i = 0; i < forums.length; i++) {
                 forums[i].coins = await getCoinsOfForum(forums[i].id);
@@ -256,7 +256,7 @@ exports.getForumByType = (req, res) => {
             req.query.index
             }`,
         async (err, forums) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
 
             for (let i = 0; i < forums.length; i++) {
                 forums[i].coins = await getCoinsOfForum(forums[i].id);
@@ -275,7 +275,7 @@ exports.getForumByUserId = (req, res) => {
         `FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.user_id=${req.query.user_id}
             `,
         async (err, forums) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
 
             for (let i = 0; i < forums.length; i++) {
                 forums[i].coins = await getCoinsOfForum(forums[i].id);
@@ -356,7 +356,7 @@ exports.getForumByCoins = async (req, res) => {
                 'FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?',
                 [id],
                 async (err, forums) => {
-                    if (err) throw err;
+                    if (err) return res.status(500).json({ err });
 
                     for (let i = 0; i < forums.length; i++) {
                         forums[i].coins = await getCoinsOfForum(forums[i].id);
@@ -392,11 +392,11 @@ exports.createComment = (req, res) => {
         "INSERT INTO Comments(content, forum_id, created_at, user_id) VALUES(?, ? ,?, ?)",
         [content, forum_id, timestamp, req.decoded._id],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             conn.query(
                 `UPDATE Users SET point=point+3 WHERE id=${req.decoded._id}`,
                 (err) => {
-                    if (err) throw err;
+                    if (err) return res.status(500).json({ err });
                     return res.status(200).json({
                         comment_id: result.insertId
                     });
@@ -411,7 +411,7 @@ exports.deleteComment = (req, res) => {
         `DELETE FROM Comments WHERE id = ${req.query.comment_id}`,
 
         err => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             return res.status(200).json({
                 message: "comment removed successfully"
             });
@@ -450,12 +450,12 @@ exports.getOneForum = (req, res) => {
         "SELECT * FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?",
         [req.query.forum_id],
         (err, forum) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             conn.query(
                 "SELECT * FROM Images WHERE forum_id = ?",
                 [req.query.forum_id],
                 (err, image) => {
-                    if (err) throw err;
+                    if (err) return res.status(500).json({ err });
                     let result = {
                         id: forum[0].id,
                         category: forum[0].category,
@@ -490,7 +490,7 @@ exports.forumView = (req, res) => {
         "UPDATE Forums SET view_cnt = view_cnt+1 WHERE id = ?",
         [forum_id],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             return res.status(200).json({
                 message: "view_cnt + 1"
             });
@@ -504,12 +504,12 @@ exports.forumLike = (req, res) => {
         "INSERT INTO Likes(user_id, forum_id) VALUES(?, ?)",
         [req.decoded._id, forum_id],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             conn.query(
                 "UPDATE Forums SET like_cnt = like_cnt+1 WHERE id = ?",
                 [forum_id],
                 (err, result) => {
-                    if (err) throw err;
+                    if (err) return res.status(500).json({ err });
                     return res.status(200).json({
                         message: "like_cnt + 1"
                     });
@@ -525,12 +525,12 @@ exports.forumDislike = (req, res) => {
         "DELETE FROM Likes WHERE user_id = ? and forum_id = ?",
         [req.decoded._id, forum_id],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             conn.query(
                 "UPDATE Forums SET like_cnt = like_cnt-1 WHERE id = ?",
                 [forum_id],
                 (err, result) => {
-                    if (err) throw err;
+                    if (err) return res.status(500).json({ err });
                     return res.status(200).json({
                         message: "like_cnt - 1"
                     });
@@ -546,12 +546,12 @@ exports.forumHate = (req, res) => {
         "INSERT INTO Dislikes(user_id, forum_id) VALUES(?, ?)",
         [req.decoded._id, forum_id],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             conn.query(
                 "UPDATE Forums SET dislike_cnt = dislike_cnt+1 WHERE id = ?",
                 [forum_id],
                 (err, result) => {
-                    if (err) throw err;
+                    if (err) return res.status(500).json({ err });
                     return res.status(200).json({
                         message: "success"
                     });
@@ -567,12 +567,12 @@ exports.forumUnhate = (req, res) => {
         "DELETE FROM Dislikes WHERE user_id = ? and forum_id = ?",
         [req.decoded._id, forum_id],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             conn.query(
                 "UPDATE Forums SET dislike_cnt = dislike_cnt-1 WHERE id = ?",
                 [forum_id],
                 (err, result) => {
-                    if (err) throw err;
+                    if (err) return res.status(500).json({ err });
                     return res.status(200).json({
                         message: "success"
                     });
@@ -588,7 +588,7 @@ exports.forumLikeCheck = (req, res) => {
         "SELECT * FROM Likes WHERE user_id = ? and forum_id = ?",
         [req.decoded._id, forum_id],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             if (result.length == 0) {
                 return res.status(200).json({
                     message: "it's okay to like this forum"
@@ -608,7 +608,7 @@ exports.forumHateCheck = (req, res) => {
         "SELECT * FROM Dislikes WHERE user_id = ? and forum_id = ?",
         [req.decoded._id, forum_id],
         (err, result) => {
-            if (err) throw err;
+            if (err) return res.status(500).json({ err });
             if (result.length == 0) {
                 return res.status(200).json({
                     message: "it's okay to dislike this forum"
@@ -636,12 +636,12 @@ exports.forumsView = (req, res) => {
                 conn.query(
                     `INSERT INTO Views (user_id,forum_id) VALUES (${req.decoded._id},${forum_id})`,
                     (err, result) => {
-                        if (err) throw err;
+                        if (err) return res.status(500).json({ err });
                         conn.query(
                             "UPDATE Forums SET view_cnt = view_cnt+1 WHERE id = ?",
                             [forum_id],
                             (err, result) => {
-                                if (err) throw err;
+                                if (err) return res.status(500).json({ err });
                                 return res.status(200).json({
                                     message: "view_cnt + 1"
                                 });
@@ -660,7 +660,7 @@ exports.searchForums = (req, res) => {
             req.query.index
             }`,
         (err,result)=>{
-            if(err) throw err;
+            if(err) return res.status(500).json({ err });
             return res.status(200).json({
                 nextIndex: parseInt(req.query.index) + 30,
                 result
