@@ -279,6 +279,7 @@ exports.getForumByUserId = (req, res) => {
 
             for (let i = 0; i < forums.length; i++) {
                 forums[i].coins = await getCoinsOfForum(forums[i].id);
+                forums[i].images = await getImagesOfForum(forums[i].id);
             }
             return res.status(200).json({
                 forums
