@@ -16,4 +16,5 @@ router.patch('/profile', controller.changeProfileImage);
 router.use('/password', authMiddleware);
 router.patch('/password', controller.changePassword);
 router.post('/test',controller.test);
+
 module.exports = router;

@@ -229,7 +229,7 @@ function getImagesOfForum(forum_id) {
 
 exports.getAllForum = (req, res) => {
     conn.query(
-        `SELECT Forums.id,Forums.like_cnt,Forums.dislike_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.id,Forums.like_cnt,Forums.dislike_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at, Forums.updated_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id order by created_at asc LIMIT 30 OFFSET ${
             req.query.index
             }`,
