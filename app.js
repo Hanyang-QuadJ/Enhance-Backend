@@ -70,7 +70,7 @@ app.listen(port, () => {
 });
 
 setInterval(function () {
-    console.log('yes')
+    // console.log('yes')
     conn.query('SELECT * FROM Users');
 }, 3000);
 /* ========================
