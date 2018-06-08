@@ -8,5 +8,6 @@ router.delete("/user", controller.deleteUser);
 router.use('/coin',authMiddleware);
 router.post("/coin", controller.createCoin);
 router.use('/coin/:coin_id',authMiddleware);
-router.delete("/coin/:coin_id", controller.deleteCoin);
+router.delete("/coin", controller.deleteCoin);
+router.delete("/comment/:comment_id", controller.deleteComment);
 module.exports = router;

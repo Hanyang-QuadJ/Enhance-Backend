@@ -143,12 +143,14 @@ truncateNews = () => {
 refreshNews = async () => {
     let articles = [];
     await truncateNews();
-    for (let i = 0; i < searchKeyword.coins.length; i++) {
-        articles = await getArticles(searchKeyword.coins[i].searchKeyword);
-        for (let j = 0; j < articles.length; j++) {
-            await insertNews(articles[j], i + 1, "naver");
+    conn.query('SELECT * FROM Coins', async (err, result) => {
+        for (let i = 0; i < result.length; i++) {
+            articles = await getArticles(result[i].keyword);
+            for (let j = 0; j < articles.length; j++) {
+                await insertNews(articles[j], i + 1, "naver");
+            }
         }
-    }
+    });
 };
 
 // refreshNews();
@@ -184,10 +186,10 @@ insertBlogs = (article, coin_id, source) => {
         console.log(article);
         let link = article.link;
         let result;
-        if(link.indexOf("naver")!== -1){
+        if (link.indexOf("naver") !== -1) {
             let parsedLink = link.split('?');
             let number = parsedLink[1].split('logNo=');
-            result = parsedLink[0]+'/'+number[1];
+            result = parsedLink[0] + '/' + number[1];
         }
         else {
             result = link;
@@ -216,15 +218,18 @@ truncateBlogs = () => {
 refreshBlogs = async () => {
     let articles = [];
     await truncateBlogs();
-    for (let i = 0; i < searchKeyword.coins.length; i++) {
-    // for (let i = 0; i < 1; i++) {
-        articles = await getBlogs(searchKeyword.coins[i].searchKeyword);
-        for (let j = 0; j < articles.length; j++) {
-            await insertBlogs(articles[j], i + 1, "naver");
+    conn.query('SELECT * FROM Coins', async (err, result) => {
+        for (let i = 0; i < result.length; i++) {
+            // for (let i = 0; i < 1; i++) {
+            articles = await getBlogs(result[i].searchKeyword);
+            for (let j = 0; j < articles.length; j++) {
+                await insertBlogs(articles[j], i + 1, "naver");
+            }
         }
-    }
+    })
 };
 // cron.schedule('*/60 * * * * *', async function () {
 //
 //     refreshBlogs();
 // });
+//refreshNews();
