@@ -38,6 +38,29 @@ let getCoinsOfForum = forum_id => {
         );
     });
 };
+
+exports.deleteImage = (req, res) => {
+    const { key } = req.body;
+    const bucketInstance = new AWS.S3();
+    let params = {
+        Bucket: 'inhance',
+        Key: key
+    };
+    bucketInstance.deleteObject(params, function (err, data) {
+        if (err) return res.status(406).json({ err });
+        if (data) {
+            conn.query(
+                `DELETE FROM Images WHERE img_url = 'https://s3.ap-northeast-2.amazonaws.com/inhance/${key}'`,
+                (err) => {
+                    if (err) return res.status(406).json({ err });
+                    return res.status(200).json({
+                        message: 'Image is successfully deleted'
+                    })
+                }
+            )
+        }
+    });
+}
 exports.uploadImage = (req, res) => {
     const { forum_id, base64 } = req.body;
     const d = new Date();

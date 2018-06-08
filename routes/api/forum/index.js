@@ -15,7 +15,8 @@ router.post("/filter", controller.getForumByType);
 router.get("/one", controller.getOneForum);
 router.get("/coin/:forum_id", controller.getForumCoin);
 
-router.post('/image', controller.uploadImage);
+router.post('/image/upload', controller.uploadImage);
+router.delete('/image/delete', controller.deleteImage);
 
 router.post("/create/comment/:forum_id", controller.createComment);
 router.get("/comment/:forum_id", controller.getCommentList);
