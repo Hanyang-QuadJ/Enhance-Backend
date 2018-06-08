@@ -61,40 +61,7 @@ exports.deleteImage = (req, res) => {
         }
     });
 }
-exports.uploadImage = (req, res) => {
-    const { forum_id, base64 } = req.body;
-    const d = new Date();
-    d.setUTCHours(d.getUTCHours());
 
-    const picKey = d.getFullYear() + '_'
-        + d.getMonth() + '_'
-        + d.getDate() + '_'
-        + crypto.randomBytes(20).toString('hex') +
-        +req.decoded._id + '.jpg';
-    const picUrl = `https://s3.ap-northeast-2.amazonaws.com/inhance/${picKey}`;
-    let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    s3.putObject({
-        Bucket: 'inhance',
-        Key: picKey,
-        Body: buf,
-        ACL: 'public-read'
-    }, function (err, response) {
-        if (err) {
-            if (err) return res.status(406).json({err});
-        } else {
-            // console.log(response)
-            conn.query('INSERT INTO Images(forum_id, img_url) VALUES(?, ?)', 
-                [post_id, picUrl], 
-                (err, image) => {
-                    if (err) return res.status(406).json({ err });
-                    return res.status.json({
-                        image_id: image.insertId
-                    })
-                }
-            )
-        }
-    });
-}
 exports.createForum = (req, res) => {
     const {coin_list, category, title, content, pic_list} = req.body;
     const timestamp = new Date();
@@ -263,7 +230,40 @@ exports.updateForum = (req, res) => {
     }
 }
 
+exports.uploadImage = (req, res) => {
+    const { forum_id, base64 } = req.body;
+    const d = new Date();
+    d.setUTCHours(d.getUTCHours());
 
+    const picKey = d.getFullYear() + '_'
+        + d.getMonth() + '_'
+        + d.getDate() + '_'
+        + crypto.randomBytes(20).toString('hex') +
+        +req.decoded._id + '.jpg';
+    const picUrl = `https://s3.ap-northeast-2.amazonaws.com/inhance/${picKey}`;
+    let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+    s3.putObject({
+        Bucket: 'inhance',
+        Key: picKey,
+        Body: buf,
+        ACL: 'public-read'
+    }, function (err, response) {
+        if (err) {
+            if (err) return res.status(406).json({err});
+        } else {
+            // console.log(response)
+            conn.query('INSERT INTO Images(forum_id, img_url) VALUES(?, ?)', 
+                [post_id, picUrl], 
+                (err, image) => {
+                    if (err) return res.status(406).json({ err });
+                    return res.status.json({
+                        image_id: image.insertId
+                    })
+                }
+            )
+        }
+    });
+}
 exports.getForumCoin = (req, res) => {
     const {forum_id} = req.params;
     conn.query(

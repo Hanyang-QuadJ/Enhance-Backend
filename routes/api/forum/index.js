@@ -4,6 +4,7 @@ const authMiddleware = require("../../../middlewares/auth");
 router.use("/create", authMiddleware);
 router.use("/delete", authMiddleware);
 router.use("/update", authMiddleware);
+router.use("/image", authMiddleware);
 router.post("/create", controller.createForum);
 router.delete("/:forum_id", controller.deleteForum);
 router.post("/update", controller.updateForum);
