@@ -173,7 +173,6 @@ exports.createForum = (req, res) => {
 exports.updateForum = (req, res) => {
     const {id, coin_list, category, title, content, pic_list} = req.body;
     const timestamp = new Date();
-    timestamp.setUTCHours(timestamp.getUTCHours());
     let coin_input = (coin_id, forum_id) => {
         return new Promise((resolve, reject) => {
             conn.query(
@@ -186,65 +185,82 @@ exports.updateForum = (req, res) => {
             );
         });
     };
-    const d = new Date();
-    d.setUTCHours(d.getUTCHours());
-    let pic_input = (forum_id, pic) => {
-        return new Promise((resolve, reject) => {
-            const picKey = d.getFullYear() + '_'
-                + d.getMonth() + '_'
-                + d.getDate() + '_'
-                + crypto.randomBytes(20).toString('hex') +
-                +req.decoded._id + '.jpg';
-            const picUrl = `https://s3.ap-northeast-2.amazonaws.com/inhance/${picKey}`;
-            let buf = new Buffer(pic.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-            s3.putObject({
-                Bucket: 'inhance',
-                Key: picKey,
-                Body: buf,
-                ACL: 'public-read'
-            }, function (err, response) {
-                if (err) {
-                    if (err) reject(err);
-                } else {
-                    // console.log(response)
-                    conn.query(
-                        "DELETE FROM Images WHERE forum_id = ?",
-                        [forum_id],
-                        (err) => {
-                            if (err) reject(err);
-                            conn.query('INSERT INTO Images(forum_id, img_url) VALUES(?, ?)', [forum_id, picUrl], (err) => {
+    timestamp.setUTCHours(timestamp.getUTCHours());
+    if (pic_list == null) {
+        conn.query(
+            "UPDATE Forums SET category = ?, title = ?, content = ?, user_id = ?, updated_at = ? WHERE id = ?",
+            [category, title, content, req.decoded._id, timestamp, id],
+            async (err, result) => {
+                if (err) throw err;
+                await coin_list.forEach(async coin => {
+                    await coin_input(coin, id);
+                });
+                await res.status(200).json({
+                    message: "success"
+                });
+            }
+        );
+    } else {
+        const d = new Date();
+        d.setUTCHours(d.getUTCHours());
+        let pic_input = (forum_id, pic) => {
+            return new Promise((resolve, reject) => {
+                const picKey = d.getFullYear() + '_'
+                    + d.getMonth() + '_'
+                    + d.getDate() + '_'
+                    + crypto.randomBytes(20).toString('hex') +
+                    +req.decoded._id + '.jpg';
+                const picUrl = `https://s3.ap-northeast-2.amazonaws.com/inhance/${picKey}`;
+                let buf = new Buffer(pic.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+                s3.putObject({
+                    Bucket: 'inhance',
+                    Key: picKey,
+                    Body: buf,
+                    ACL: 'public-read'
+                }, function (err, response) {
+                    if (err) {
+                        if (err) reject(err);
+                    } else {
+                        // console.log(response)
+                        conn.query(
+                            "DELETE FROM Images WHERE forum_id = ?",
+                            [forum_id],
+                            (err) => {
                                 if (err) reject(err);
-                                resolve();
-                            })
-                        }
-                    )
-                }
-            });
-        })
-    }
-    conn.query(
-        "DELETE FROM Forum_Coin WHERE forum_id = ?",
-        [id],
-        (err, result) => {
-            if (err) throw err;
-            conn.query(
-                "UPDATE Forums SET category = ?, title = ?, content = ?, user_id = ?, updated_at = ? WHERE id = ?",
-                [category, title, content, req.decoded._id, timestamp, id],
-                async (err, result) => {
-                    if (err) throw err;
-                    await coin_list.forEach(async coin => {
-                        await coin_input(coin, id);
-                    });
-                    await pic_list.forEach(async (pic) => {
-                        await pic_input(id, pic);
-                    });
-                    await res.status(200).json({
-                        message: "success"
-                    });
-                }
-            );
+                                conn.query('INSERT INTO Images(forum_id, img_url) VALUES(?, ?)', [forum_id, picUrl], (err) => {
+                                    if (err) reject(err);
+                                    resolve();
+                                })
+                            }
+                        )
+                    }
+                });
+            })
         }
-    )
+        conn.query(
+            "DELETE FROM Forum_Coin WHERE forum_id = ?",
+            [id],
+            (err, result) => {
+                if (err) throw err;
+                conn.query(
+                    "UPDATE Forums SET category = ?, title = ?, content = ?, user_id = ?, updated_at = ? WHERE id = ?",
+                    [category, title, content, req.decoded._id, timestamp, id],
+                    async (err, result) => {
+                        if (err) throw err;
+                        await coin_list.forEach(async coin => {
+                            await coin_input(coin, id);
+                        });
+                        await pic_list.forEach(async (pic) => {
+                            await pic_input(id, pic);
+                        });
+                        await res.status(200).json({
+                            message: "success"
+                        });
+                    }
+                );
+            }
+        )
+    }
 }
 
 
