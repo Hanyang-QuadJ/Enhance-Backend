@@ -229,7 +229,7 @@ function getImagesOfForum(forum_id) {
 
 exports.getAllForum = (req, res) => {
     conn.query(
-        `SELECT Forums.id,Forums.like_cnt,Forums.dislike_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.id,Forums.like_cnt,Forums.dislike_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at, Forums.updated_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id order by created_at asc LIMIT 30 OFFSET ${
             req.query.index
             }`,
@@ -251,7 +251,7 @@ exports.getAllForum = (req, res) => {
 exports.getForumByType = (req, res) => {
     const {category} = req.body;
     conn.query(
-        `SELECT Forums.id,Forums.like_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.id,Forums.like_cnt, Users.point, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at, Forums.updated_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.category = '${category}' order by created_at asc LIMIT 30 OFFSET ${
             req.query.index
             }`,
@@ -352,7 +352,7 @@ exports.getForumByCoins = async (req, res) => {
         return new Promise((resolve, reject) => {
 
             conn.query(
-                'SELECT Forums.id,Forums.dislike_cnt,like_cnt, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ' +
+                'SELECT Forums.id,Forums.dislike_cnt,like_cnt, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at, Forums.updated_at ' +
                 'FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.id = ?',
                 [id],
                 async (err, forums) => {
