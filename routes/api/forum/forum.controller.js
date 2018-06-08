@@ -364,6 +364,17 @@ exports.getForumByCoins = async (req, res) => {
     const {coins, category} = req.body;
     let forums_id = [];
     let result = [];
+    let getImageByforum = (forum_id) => {
+        return new Promise((resolve, reject) => {
+            conn.query(
+                `SELECT * FROM Images WHERE forum_id = ${forum_id}`,
+                (err, result) => {
+                    if (err) reject(err);
+                    resolve(result);
+                }
+            );
+        })
+    }
     let getForumBycoin = (coins_id) => {
         return new Promise((resolve, reject) => {
             let queryString;
@@ -415,6 +426,9 @@ exports.getForumByCoins = async (req, res) => {
                 queryString,
                 (err, result) => {
                     if (err) reject(err);
+                    console.log("------");
+                    console.log(result);
+                    console.log("------");
                     resolve(result);
                 }
             );
@@ -444,8 +458,11 @@ exports.getForumByCoins = async (req, res) => {
     for (let i = 0; i < forums.length; i++) {
         // console.log(forums_id);
         ret = await getForumByid(forums[i].forum_id);
+        imgs = await getImageByforum(forums[i].forum_id)
         if (ret) {
+            ret.images = imgs;
             result[result.length] = ret;
+
         }
     }
     return res.status(200).json({

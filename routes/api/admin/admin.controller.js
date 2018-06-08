@@ -74,7 +74,7 @@ exports.deleteCoin = (req, res) => {
         })
     }
     else if (flag === 1) {
-        conn.query("DELETE FROM Coins WHERE id = ?", [abbr], (err, result) => {
+        conn.query("DELETE FROM Coins WHERE abbr = ?", [abbr], (err, result) => {
             if (err) InternalError(err);
             return res.status(200).json({
                 message: "delete forum successfully"
