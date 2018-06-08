@@ -235,7 +235,7 @@ exports.uploadImage = (req, res) => {
                 [forum_id, picUrl], 
                 (err, image) => {
                     if (err) return res.status(406).json({ err });
-                    return res.status.json({
+                    return res.status(200).json({
                         image_id: image.insertId
                     })
                 }
