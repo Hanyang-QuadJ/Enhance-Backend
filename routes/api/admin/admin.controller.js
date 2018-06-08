@@ -66,7 +66,7 @@ exports.createCoin = (req, res) => {
 };
 
 exports.deleteCoin = (req, res) => {
-    const {coin_id} = req.params;
+    const {abbr} = req.body;
     const flag = req.decoded.flag;
     if (flag === 0) {
         return res.status(400).json({
@@ -74,7 +74,25 @@ exports.deleteCoin = (req, res) => {
         })
     }
     else if (flag === 1) {
-        conn.query("DELETE FROM Coins WHERE id = ?", [coin_id], (err, result) => {
+        conn.query("DELETE FROM Coins WHERE id = ?", [abbr], (err, result) => {
+            if (err) InternalError(err);
+            return res.status(200).json({
+                message: "delete forum successfully"
+            });
+        });
+    }
+};
+
+exports.deleteComment = (req, res) => {
+    const {comment_id} = req.params;
+    const flag = req.decoded.flag;
+    if (flag === 0) {
+        return res.status(400).json({
+            message: "Forbidden"
+        })
+    }
+    else if (flag === 1) {
+        conn.query("DELETE FROM Comments WHERE id = ?", [comment_id], (err, result) => {
             if (err) InternalError(err);
             return res.status(200).json({
                 message: "delete forum successfully"

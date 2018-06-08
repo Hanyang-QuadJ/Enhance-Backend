@@ -304,7 +304,7 @@ exports.getForumByType = (req, res) => {
 
 exports.getForumByUserId = (req, res) => {
     conn.query(
-        `SELECT Forums.like_cnt,Forums.dislike_cnt, Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at ` +
+        `SELECT Forums.like_cnt,Forums.dislike_cnt, Forums.id, category, title, content, view_cnt, Users.id AS author, Users.email, Users.username, Forums.created_at,Forums.updated_at ` +
         `FROM Forums JOIN Users ON Forums.user_id = Users.id WHERE Forums.user_id=${req.query.user_id}
             `,
         async (err, forums) => {
@@ -427,7 +427,7 @@ exports.createComment = (req, res) => {
         (err, result) => {
             if (err) return res.status(500).json({ err });
             conn.query(
-                `UPDATE Users SET point=point+3 WHERE id=${req.decoded._id}`,
+                `UPDATE Users SET point=point+1 WHERE id=${req.decoded._id}`,
                 (err) => {
                     if (err) return res.status(500).json({ err });
                     return res.status(200).json({
