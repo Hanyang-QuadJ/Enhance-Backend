@@ -134,18 +134,26 @@ exports.updateForum = (req, res) => {
     timestamp.setUTCHours(timestamp.getUTCHours());
     if (pic_list == null) {
         conn.query(
-            "UPDATE Forums SET category = ?, title = ?, content = ?, user_id = ?, updated_at = ? WHERE id = ?",
-            [category, title, content, req.decoded._id, timestamp, id],
-            async (err, result) => {
+            "DELETE FROM Forum_Coin WHERE forum_id = ?",
+            [id],
+            (err, result) => {
                 if (err) throw err;
-                await coin_list.forEach(async coin => {
-                    await coin_input(coin, id);
-                });
-                await res.status(200).json({
-                    message: "success"
-                });
+                conn.query(
+                    "UPDATE Forums SET category = ?, title = ?, content = ?, user_id = ?, updated_at = ? WHERE id = ?",
+                    [category, title, content, req.decoded._id, timestamp, id],
+                    async (err, result) => {
+                        if (err) throw err;
+                        await coin_list.forEach(async coin => {
+                            await coin_input(coin, id);
+                        });
+                        await res.status(200).json({
+                            message: "success"
+                        });
+                    }
+                );
             }
-        );
+        )
+        
     } else {
         const d = new Date();
         d.setUTCHours(d.getUTCHours());
