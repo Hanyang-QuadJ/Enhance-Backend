@@ -12,7 +12,7 @@ exports.addFavorite = (req, res) => {
                     message: 'You already have this coin as favorite'
                 })
             }
-            else if (coin_id > 30 || coin_id < 1) {
+            else if (coin_id < 1) {
                 return res.status(404).json({
                     message: 'There is no such coin'
                 })
