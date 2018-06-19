@@ -521,7 +521,7 @@ exports.deleteComment = (req, res) => {
 exports.getCommentList = (req, res) => {
     const {forum_id} = req.params;
     conn.query(
-        "SELECT Comments.id, content, user_id, created_at, username, profile_img, point FROM Comments JOIN Users ON Comments.user_id = Users.id WHERE forum_id = ?",
+        "SELECT Comments.id, content, user_id, created_at, username, profile_img, point FROM Comments JOIN Users ON Comments.user_id = Users.id WHERE forum_id = ? ORDER BY created_at DESC",
         [forum_id],
         (err, result) => {
             return res.status(200).json({
