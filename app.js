@@ -147,7 +147,7 @@ refreshNews = async () => {
         for (let i = 0; i < result.length; i++) {
             articles = await getArticles(result[i].keyword);
             for (let j = 0; j < articles.length; j++) {
-                await insertNews(articles[j], i + 1, "naver");
+                await insertNews(articles[j], result[i].id, "naver");
             }
         }
     });
@@ -221,15 +221,14 @@ refreshBlogs = async () => {
     conn.query('SELECT * FROM Coins', async (err, result) => {
         for (let i = 0; i < result.length; i++) {
             // for (let i = 0; i < 1; i++) {
-            articles = await getBlogs(result[i].searchKeyword);
+            articles = await getBlogs(result[i].keyword);
             for (let j = 0; j < articles.length; j++) {
-                await insertBlogs(articles[j], i + 1, "naver");
+                await insertBlogs(articles[j], result[i].id, "naver");
             }
         }
     })
 };
-// cron.schedule('*/60 * * * * *', async function () {
-//
-//     refreshBlogs();
-// });
-//refreshNews();
+cron.schedule('*/60 * * * * *', async function () {
+    await refreshBlogs();
+    await refreshNews();
+});
