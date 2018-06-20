@@ -84,8 +84,9 @@ promiseRequest = (options) => {
             if (!error && res.statusCode === 200) {
                 resolve(body);
             } else {
-                // console.log(body);
-                // console.log(res.statusCode);
+                console.log(body);
+                console.log(res.statusCode);
+                console.log(error);
                 reject(error);
             }
         });
@@ -97,6 +98,7 @@ getArticles = async (query) => {
     let displayed = 100;
     let start = 1;
     while (displayed === 100 && start < 1001) {
+        await sleep(2000);
         const api_url = 'https://openapi.naver.com/v1/search/news?query=' + encodeURI(query).replace("/\\+/gi", "%20") + '&display=' + encodeURI(100) + '&start=' + encodeURI(start);
         const options = {
             url: api_url,
@@ -104,7 +106,7 @@ getArticles = async (query) => {
         };
         let body = await promiseRequest(options);
         body = JSON.parse(body);
-
+        // console.log(body);
         displayed = body.display;
         start += 100;
         // console.log(body.start + " / " + body.total + " : " + body.display);
@@ -134,7 +136,10 @@ insertNews = (article, coin_id, source) => {
 truncateNews = () => {
     return new Promise((resolve, reject) => {
         conn.query('TRUNCATE News', (err, result) => {
-            if (err) reject(err);
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
             else {
                 resolve(result);
             }
@@ -168,6 +173,7 @@ getBlogs = async (query) => {
     let displayed = 100;
     let start = 1;
     while (displayed === 100 && start < 101) {
+        await sleep(2000);
         const api_url = 'https://openapi.naver.com/v1/search/blog?query=' + encodeURI(query) + '&display=' + encodeURI(100) + '&start=' + encodeURI(start);
         const options = {
             url: api_url,
@@ -235,9 +241,14 @@ refreshBlogs = async () => {
         console.log("blog refetching complete");
     })
 };
-cron.schedule('* * */1 * * *', async function () {
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+cron.schedule('59 * * * *', async function () {
     console.log("hey")
     await refreshBlogs();
     await refreshNews();
 });
 refreshNews();
+refreshBlogs();
