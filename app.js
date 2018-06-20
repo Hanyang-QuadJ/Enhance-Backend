@@ -84,8 +84,8 @@ promiseRequest = (options) => {
             if (!error && res.statusCode === 200) {
                 resolve(body);
             } else {
-                console.log(body);
-                console.log(res.statusCode);
+                // console.log(body);
+                // console.log(res.statusCode);
                 reject(error);
             }
         });
@@ -107,7 +107,7 @@ getArticles = async (query) => {
 
         displayed = body.display;
         start += 100;
-        console.log(body.start + " / " + body.total + " : " + body.display);
+        // console.log(body.start + " / " + body.total + " : " + body.display);
         ret.push(...body.items);
     }
     return new Promise((resolve, reject) => {
@@ -119,9 +119,12 @@ insertNews = (article, coin_id, source) => {
     return new Promise((resolve, reject) => {
         conn.query('INSERT INTO News (title, originallink, link, description, pubDate, coin_id, source) VALUES (?,?,?,?,?,?,?)',
             [article.title, article.originallink, article.link, article.description, article.pubDate, coin_id, source], (err, result) => {
-                if (err) reject(err);
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
                 else {
-                    console.log(result);
+                    // console.log(result);
                     resolve(result);
                 }
             });
@@ -145,11 +148,13 @@ refreshNews = async () => {
     await truncateNews();
     conn.query('SELECT * FROM Coins', async (err, result) => {
         for (let i = 0; i < result.length; i++) {
+            console.log("refetching news now -> progress:"+i+"/"+result.length);
             articles = await getArticles(result[i].keyword);
             for (let j = 0; j < articles.length; j++) {
                 await insertNews(articles[j], result[i].id, "naver");
             }
         }
+        console.log("news refetching complete");
     });
 };
 
@@ -173,7 +178,7 @@ getBlogs = async (query) => {
 
         displayed = body.display;
         start += 100;
-        console.log(body.start + " / " + body.total + " : " + body.display);
+        // console.log(body.start + " / " + body.total + " : " + body.display);
         ret.push(...body.items);
     }
     return new Promise((resolve, reject) => {
@@ -183,7 +188,7 @@ getBlogs = async (query) => {
 
 insertBlogs = (article, coin_id, source) => {
     return new Promise((resolve, reject) => {
-        console.log(article);
+        // console.log(article);
         let link = article.link;
         let result;
         if (link.indexOf("naver") !== -1) {
@@ -198,7 +203,7 @@ insertBlogs = (article, coin_id, source) => {
             [article.title, result, article.description, article.bloggername, article.postdate, coin_id, source], (err, result) => {
                 if (err) throw err;
                 else {
-                    console.log(result);
+                    // console.log(result);
                     resolve(result);
                 }
             });
@@ -220,15 +225,19 @@ refreshBlogs = async () => {
     await truncateBlogs();
     conn.query('SELECT * FROM Coins', async (err, result) => {
         for (let i = 0; i < result.length; i++) {
+            console.log("refetching blog now -> progress:"+i+"/"+result.length);
             // for (let i = 0; i < 1; i++) {
             articles = await getBlogs(result[i].keyword);
             for (let j = 0; j < articles.length; j++) {
                 await insertBlogs(articles[j], result[i].id, "naver");
             }
         }
+        console.log("blog refetching complete");
     })
 };
-cron.schedule('*/60 * * * * *', async function () {
+cron.schedule('* * */1 * * *', async function () {
+    console.log("hey")
     await refreshBlogs();
     await refreshNews();
 });
+refreshNews();
