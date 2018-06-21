@@ -245,7 +245,7 @@ function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
-cron.schedule('59 * * * *', async function () {
+cron.schedule('59 5,23 * * *', async function () {
     console.log("hey")
     await refreshBlogs();
     await refreshNews();
